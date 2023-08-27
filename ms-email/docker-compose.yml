@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  ms-email-db:
+    image: mysql:8.1
+    restart: on-failure
+    ports:
+      - '${DB_PORT}:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+
+volumes:
+  mysql_data:
