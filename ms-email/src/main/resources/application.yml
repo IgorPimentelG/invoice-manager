@@ -2,10 +2,12 @@ server:
   port: 8585
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
   datasource:
-    url:
-    username:
-    password:
+    url: jdbc:mysql://localhost:${DB_PORT}/${DB_DATABASE}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: none
