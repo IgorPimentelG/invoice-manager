@@ -25,4 +25,27 @@ public class EmailTest {
 
 		assertNotNull(result);
 	}
+
+	@Test
+	@DisplayName("should throws an InvalidValueException when create a new email with invalid id")
+	void testCreateEmailWithInvalidId() {
+
+		Exception exception = assertThrows(InvalidValueException.class, () -> {
+			new Email(
+			  "invalid-id",
+			  "72c02d05-feff-4a37-9b91-dbb01cedfa46",
+			  "any_from@mail.com",
+			  "any_to@mail.com",
+			  "any_subject",
+			  "any_content",
+			  Status.SENT,
+			  1693255833552L
+			);
+		});
+
+		String expectedMessage = "The field id is not a valid value. Because the value is not UUID.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
