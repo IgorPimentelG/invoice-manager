@@ -11,3 +11,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+  mail:
+    host:
+    port:
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
