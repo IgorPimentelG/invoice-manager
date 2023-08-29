@@ -4,8 +4,12 @@ import com.ms.email.domain.entities.Email;
 import com.ms.email.domain.errors.InvalidValueException;
 import com.ms.email.domain.errors.NotFoundException;
 import com.ms.email.domain.factories.EmailFactory;
+import com.ms.email.infra.controllers.docs.email.DocFindAllEmailRegisters;
+import com.ms.email.infra.controllers.docs.email.DocFindEmailRegister;
+import com.ms.email.infra.controllers.docs.email.DocSendEmail;
 import com.ms.email.infra.controllers.dtos.EmailDTO;
 import com.ms.email.infra.services.EmailService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,11 +22,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/email")
+@Tag(name = "Email", description = "Endpoints for managing email")
 public class EmailController {
 
 	@Autowired
 	private EmailService service;
 
+	@DocSendEmail
 	@PostMapping("/v1/send")
 	public ResponseEntity<Email> sendEmail(@RequestBody @Valid EmailDTO emailDTO) throws InvalidValueException {
 		Email email = EmailFactory.create(
@@ -37,12 +43,14 @@ public class EmailController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(body);
 	}
 
+	@DocFindEmailRegister
 	@GetMapping("/v1/{id}")
 	public ResponseEntity<Email> findById(@PathVariable("id") String id) throws NotFoundException {
 		var body =  service.findById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(body);
 	}
 
+	@DocFindAllEmailRegisters
 	@GetMapping("/v1/list-registers")
 	public ResponseEntity<Page<Email>> findAll(
 	  @RequestParam(value = "page", defaultValue = "0") int page,
