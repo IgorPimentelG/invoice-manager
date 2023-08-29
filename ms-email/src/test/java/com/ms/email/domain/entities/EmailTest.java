@@ -163,4 +163,27 @@ public class EmailTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throws an InvalidValueException when create a new email with date in the future")
+	void testCreateEmailWithDateInTheFuture() {
+
+		Exception exception = assertThrows(InvalidValueException.class, () -> {
+			new Email(
+			  "dcdafd9b-369a-4c3f-9df6-770c8428ff35",
+			  "72c02d05-feff-4a37-9b91-dbb01cedfa46",
+			  "any_from@mail.coml",
+			  "any_to@mail.coml",
+			  "any_subject",
+			  "any_content",
+			  Status.SENT,
+			  576229950000000L
+			);
+		});
+
+		String expectedMessage = "The field createdAt is not a valid value. Because the date is before the current date.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
