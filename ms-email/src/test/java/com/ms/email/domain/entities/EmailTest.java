@@ -117,4 +117,27 @@ public class EmailTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throws an InvalidValueException when create a new email with empty subject")
+	void testCreateEmailWithEmptySubject() {
+
+		Exception exception = assertThrows(InvalidValueException.class, () -> {
+			new Email(
+			  "dcdafd9b-369a-4c3f-9df6-770c8428ff35",
+			  "72c02d05-feff-4a37-9b91-dbb01cedfa46",
+			  "any_from@mail.coml",
+			  "any_to@mail.coml",
+			  " ",
+			  "any_content",
+			  Status.SENT,
+			  1693255833552L
+			);
+		});
+
+		String expectedMessage = "The field subject is not a valid value. Because the value is empty.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
