@@ -1,6 +1,7 @@
 package com.ms.email.domain.entities;
 
 import com.ms.email.domain.errors.InvalidValueException;
+import com.ms.email.domain.factories.EmailFactory;
 import com.ms.email.domain.types.Status;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,19 @@ public class EmailTest {
 		  "any_content",
 		  Status.SENT,
 		  1693255833552L
+		);
+
+		assertNotNull(result);
+	}
+
+	@Test
+	@DisplayName("should create a new email with factory")
+	void testCreateEmailWithFactory() throws InvalidValueException {
+		var result = EmailFactory.create(
+		  "any_to@mail.com",
+		  "any_subject",
+		  "any_content",
+		  "72c02d05-feff-4a37-9b91-dbb01cedfa46"
 		);
 
 		assertNotNull(result);
