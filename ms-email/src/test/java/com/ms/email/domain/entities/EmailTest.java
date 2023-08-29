@@ -48,4 +48,27 @@ public class EmailTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throws an InvalidValueException when create a new email with invalid owner ref")
+	void testCreateEmailWithInvalidOwnerRef() {
+
+		Exception exception = assertThrows(InvalidValueException.class, () -> {
+			new Email(
+			  "dcdafd9b-369a-4c3f-9df6-770c8428ff35",
+			  "invalid-owner-ref",
+			  "any_from@mail.com",
+			  "any_to@mail.com",
+			  "any_subject",
+			  "any_content",
+			  Status.SENT,
+			  1693255833552L
+			);
+		});
+
+		String expectedMessage = "The field ownerRef is not a valid value. Because the value is not UUID.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
