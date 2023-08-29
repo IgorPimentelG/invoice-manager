@@ -1,10 +1,12 @@
-version: '3.9'
+version: '3.8'
 services:
-  ms-email-db:
+  db:
     image: mysql:8.1
     restart: on-failure
     ports:
       - '${DB_PORT}:3306'
+    expose:
+      - '${DB_PORT}'
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
@@ -12,6 +14,27 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    networks:
+      - ms-network
+
+  app:
+    image: ms-email-api
+    restart: on-failure
+    build: ./ms_email
+    env_file:
+      - .env
+    ports:
+      - '8585:8585'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:${DB_PORT}/${DB_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
+    depends_on:
+      - db
+    networks:
+      - ms-network
 
 volumes:
   mysql_data:
+
+networks:
+  ms-network:
+    driver: bridge
