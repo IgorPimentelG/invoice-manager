@@ -23,10 +23,16 @@ public class Email implements Serializable {
 	@Column(name = "owner_ref")
 	private String ownerRef;
 
+	@Column(name = "recipient")
 	private String from;
+
+	@Column(name = "sender")
 	private String to;
+
 	private String subject;
 	private String content;
+
+	@Enumerated(EnumType.STRING)
 	private Status status;
 
 	@Column(name = "created_at")
