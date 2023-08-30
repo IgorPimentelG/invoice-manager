@@ -22,7 +22,7 @@ public class EmailService {
 	@Autowired
 	private JavaMailSender emailSender;
 
-	public Email send(Email email) {
+	public void send(Email email) {
 		try {
 			SimpleMailMessage message = new SimpleMailMessage();
 			message.setFrom(email.getFrom());
@@ -36,7 +36,8 @@ public class EmailService {
 		} catch (Exception e) {
 			email.setStatus(Status.ERROR);
 		}
-		return repository.save(email);
+
+		repository.save(email);
 	}
 
 	public Email findById(String id) throws NotFoundException {

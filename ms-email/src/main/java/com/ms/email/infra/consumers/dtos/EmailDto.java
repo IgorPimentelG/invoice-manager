@@ -1,9 +1,9 @@
-package com.ms.email.infra.controllers.dtos;
+package com.ms.email.infra.consumers.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record EmailDTO(
+public record EmailDto(
   @NotBlank(message = "Email owner must be informed.")
   String ownerRef,
 
