@@ -14,6 +14,8 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -70,5 +72,25 @@ public class EmailServiceTest {
 
 		assertEquals(email.getStatus(), Status.ERROR);
 		verify(emailSender, times(1)).send(message);
+	}
+
+	@Test
+	@DisplayName("should find an email record")
+	void findEmailRecordTest() throws Exception {
+		Email email = mockEmail.createEntity();
+
+		when(repository.findById(any())).thenReturn(Optional.of(email));
+
+		var result = service.findById(any());
+
+		assertNotNull(result);
+		assertEquals(email.getId(), result.getId());
+		assertEquals(email.getTo(), result.getTo());
+		assertEquals(email.getFrom(), result.getFrom());
+		assertEquals(email.getContent(), result.getContent());
+		assertEquals(email.getSubject(), result.getSubject());
+		assertEquals(email.getStatus(), result.getStatus());
+		assertEquals(email.getOwnerRef(), result.getOwnerRef());
+		assertEquals(email.getCreatedAt(), result.getCreatedAt());
 	}
 }
