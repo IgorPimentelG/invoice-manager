@@ -11,10 +11,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,6 +58,7 @@ public class EmailServiceTest {
 		service.send(email);
 
 		assertEquals(email.getStatus(), Status.SENT);
+		verify(repository, times(1)).save(any());
 		verify(emailSender, times(1)).send(message);
 	}
 
@@ -85,8 +91,6 @@ public class EmailServiceTest {
 
 		var result = service.findById(any());
 
-		verify(repository, times(1)).save(any());
-
 		assertNotNull(result);
 		assertEquals(email.getId(), result.getId());
 		assertEquals(email.getTo(), result.getTo());
@@ -113,5 +117,20 @@ public class EmailServiceTest {
 
 		verify(repository, times(1)).findById(any());
 		assertEquals(expectedMessage, resultMessage);
+	}
+
+	@Test
+	@DisplayName("should find all email records")
+	void findAllEmailRecords() throws Exception {
+		Page<Email> records = new PageImpl<>(mockEmail.createListEntity());
+		Pageable pageable = PageRequest.of(0, 1);
+
+		when(repository.findAll(pageable)).thenReturn(records);
+
+		var result = service.findAll(pageable);
+
+		assertNotNull(result);
+		assertEquals(5, result.getTotalElements());
+		verify(repository, times(1)).findAll(pageable);
 	}
 }
