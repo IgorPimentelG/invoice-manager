@@ -1,6 +1,7 @@
 package com.ms.email.infra.services;
 
 import com.ms.email.domain.entities.Email;
+import com.ms.email.domain.errors.NotFoundException;
 import com.ms.email.domain.types.Status;
 import com.ms.email.infra.mocks.MockEmail;
 import com.ms.email.infra.repositories.EmailRepository;
@@ -71,6 +72,7 @@ public class EmailServiceTest {
 		service.send(email);
 
 		assertEquals(email.getStatus(), Status.ERROR);
+		verify(repository, times(1)).save(any());
 		verify(emailSender, times(1)).send(message);
 	}
 
@@ -83,6 +85,8 @@ public class EmailServiceTest {
 
 		var result = service.findById(any());
 
+		verify(repository, times(1)).save(any());
+
 		assertNotNull(result);
 		assertEquals(email.getId(), result.getId());
 		assertEquals(email.getTo(), result.getTo());
@@ -92,5 +96,22 @@ public class EmailServiceTest {
 		assertEquals(email.getStatus(), result.getStatus());
 		assertEquals(email.getOwnerRef(), result.getOwnerRef());
 		assertEquals(email.getCreatedAt(), result.getCreatedAt());
+	}
+
+	@Test
+	@DisplayName("should throws NotFoundException when find an email record was not found")
+	void throwsNotFoundExceptionWhenFindEmailRecordWasNotFoundTest() throws Exception {
+
+		when(repository.findById(any())).thenReturn(Optional.empty());
+
+		Exception exception = assertThrows(NotFoundException.class, () -> {
+			service.findById(any());
+		});
+
+		String expectedMessage = "The register of email was not found.";
+		String resultMessage = exception.getMessage();
+
+		verify(repository, times(1)).findById(any());
+		assertEquals(expectedMessage, resultMessage);
 	}
 }
