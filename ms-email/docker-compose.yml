@@ -4,12 +4,11 @@ services:
     image: mysql:8.1
     restart: on-failure
     ports:
-      - '${DB_PORT}:3306'
-    expose:
-      - '${DB_PORT}'
+      - '${DB_PORT}:${DB_PORT}'
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
+      MYSQL_TCP_PORT: ${DB_PORT}
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
