@@ -2,6 +2,8 @@ server:
   port: 8585
 
 spring:
+  application:
+    name: ms-email
   config:
     import: optional:file:ms-email/.env[.properties]
   datasource:
@@ -25,3 +27,8 @@ spring:
   rabbitmq:
     addresses: ${AMQP_URL}
     queue: ${AMQP_MS_EMAIL_QUEUE}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${SERVICE_REGISTRY_URL}
