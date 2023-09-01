@@ -13,3 +13,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${SERVICE_REGISTRY_URL}
