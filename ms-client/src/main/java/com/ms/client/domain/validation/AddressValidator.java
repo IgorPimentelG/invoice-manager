@@ -1,7 +1,6 @@
 package com.ms.client.domain.validation;
 
 import com.ms.client.domain.errors.FormatException;
-import com.ms.client.domain.errors.IncorrectValueException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,18 +11,16 @@ public abstract class AddressValidator {
 		return new AddressValidationBuilder(value);
 	}
 
-	public static class AddressValidationBuilder {
+	public static class AddressValidationBuilder extends GenericValidator {
 		private final String value;
 
 		public AddressValidationBuilder(String value) {
+			super(value);
 			this.value = value;
 		}
 
 		public AddressValidationBuilder isEmpty(String message) {
-			if (value == null || value.isBlank()) {
-				throw new IncorrectValueException(message);
-			}
-			return this;
+			return (AddressValidationBuilder) super.isEmpty(message);
 		}
 
 		public AddressValidationBuilder isState() {

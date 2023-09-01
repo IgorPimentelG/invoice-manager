@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS managers (
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    born_date DATE NOT NULL,
+    phone CHAR(15) NOT NULL UNIQUE,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(20) NOT NULL
+);
