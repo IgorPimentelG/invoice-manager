@@ -93,7 +93,7 @@ public class Address {
 
 	public void setNumber(String number) {
 		AddressValidator.validate(number)
-		  .isEmpty("number cannot be empty.")
+		  .isEmpty("Number cannot be empty.")
 		  .isAddressNumber();
 		this.number = number;
 	}

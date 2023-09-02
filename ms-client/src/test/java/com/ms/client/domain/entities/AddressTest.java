@@ -129,4 +129,25 @@ public class AddressTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throws an exception when create a address with empty number")
+	void testCreateAddressWithEmptyNumber() {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
+			var result = new Address(
+			  1L,
+			  "XX",
+			  "any city",
+			  "any street",
+			  "any neighborhood",
+			  "",
+			  "00000-000"
+			);
+		});
+
+		String expectedMessage = "Number cannot be empty.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
