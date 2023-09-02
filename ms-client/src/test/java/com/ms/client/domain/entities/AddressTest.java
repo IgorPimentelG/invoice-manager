@@ -150,4 +150,25 @@ public class AddressTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throws an exception when create a address with incorrect number format")
+	void testCreateAddressWithIncorrectNumberFormat() {
+		Exception exception = assertThrows(FormatException.class, () -> {
+			var result = new Address(
+			  1L,
+			  "XX",
+			  "any city",
+			  "any street",
+			  "any neighborhood",
+			  "A00",
+			  "00000-000"
+			);
+		});
+
+		String expectedMessage = "Number is not valid. Insert in the following format: 00 or 000-A.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
