@@ -192,4 +192,25 @@ public class AddressTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throws an exception when create a address with incorrect zip code format")
+	void testCreateAddressWithIncorrectZipCodeFormat() {
+		Exception exception = assertThrows(FormatException.class, () -> {
+			var result = new Address(
+			  1L,
+			  "XX",
+			  "any city",
+			  "any street",
+			  "any neighborhood",
+			  "00",
+			  "00000000"
+			);
+		});
+
+		String expectedMessage = "Zip code is not valid. Insert in the following format: xxxxx-xx.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
