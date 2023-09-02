@@ -171,4 +171,25 @@ public class AddressTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throws an exception when create a address with empty zip code")
+	void testCreateAddressWithEmptyZipCode() {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
+			var result = new Address(
+			  1L,
+			  "XX",
+			  "any city",
+			  "any street",
+			  "any neighborhood",
+			  "00",
+			  ""
+			);
+		});
+
+		String expectedMessage = "Zip code cannot be empty.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
