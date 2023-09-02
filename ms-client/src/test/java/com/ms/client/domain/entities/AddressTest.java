@@ -66,4 +66,25 @@ public class AddressTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throws an exception when create a address with empty city")
+	void testCreateAddressWithEmptyCity() {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
+			var result = new Address(
+			  1L,
+			  "XX",
+			  "",
+			  "any street",
+			  "any neighborhood",
+			  "00-X",
+			  "00000-000"
+			);
+		});
+
+		String expectedMessage = "City cannot be empty.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
