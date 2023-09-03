@@ -190,4 +190,25 @@ public class CompanyTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throw an exception when create a company with empty phone")
+	void testCreateCompanyWithEmptyPhone() {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
+			new Company(
+			  "4ff6d786-b7a1-4efc-be85-a297e04c2f48",
+			  "any corporate name",
+			  TaxRegime.SIMPLE_NATIONAL,
+			  "00.000.000/0000-00",
+			  "any@mail.com",
+			  "",
+			  manager
+			);
+		});
+
+		String expectedMessage = "Phone must not be empty.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
