@@ -5,6 +5,7 @@ import com.ms.client.domain.errors.IncorrectValueException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.text.Format;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -190,6 +191,27 @@ public class ManagerTest {
 		});
 
 		String expectedMessage = "Phone must not be empty.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
+
+	@Test
+	@DisplayName("should throw an exception when create a user manager with incorrect phone format")
+	void testCreateUserManagerWithIncorrectPhoneFormat() {
+		Exception exception = assertThrows(FormatException.class, () -> {
+			new Manager(
+			  "a7df6b1c-5c98-4317-b112-3407cae1406a",
+			  "000.000.000-00",
+			  "any full name",
+			  LocalDate.parse("1990-01-01"),
+			  "00000000000",
+			  "any@mail.com",
+			  "anyPassword0"
+			);
+		});
+
+		String expectedMessage = "The phone must be entered in the format: (xx) xxxxx-xxxx.";
 		String resultMessage = exception.getMessage();
 
 		assertEquals(expectedMessage, resultMessage);
