@@ -127,4 +127,25 @@ public class CompanyTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throw an exception when create a company with incorrect CNPJ format")
+	void testCreateUserManagerWithIncorrectCNPJFormat() {
+		Exception exception = assertThrows(FormatException.class, () -> {
+			new Company(
+			  "a7df6b1c-5c98-4317-b112-3407cae1406a",
+			  "any corporate name",
+			  TaxRegime.SIMPLE_NATIONAL,
+			  "00000000000000",
+			  "any@mail.com",
+			  "(00) 00000-0000",
+			  manager
+			);
+		});
+
+		String expectedMessage = "The CNPJ must be entered in the format: xx.xxx.xxx/xxxx-xx.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
