@@ -29,7 +29,7 @@ public abstract class CompanyValidator {
 		}
 
 		public CompanyValidationBuilder isCnpj() {
-			Pattern pattern = Pattern.compile("^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$");
+			Pattern pattern = Pattern.compile("^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}");
 			Matcher matcher = pattern.matcher(value);
 
 			if (!matcher.matches()) {

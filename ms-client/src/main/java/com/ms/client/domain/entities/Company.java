@@ -96,7 +96,7 @@ public class Company {
 	}
 
 	public void setCnpj(String cnpj) {
-		CompanyValidator.validate(corporateName)
+		CompanyValidator.validate(cnpj)
 		  .isEmpty("CNPJ must not be empty.")
 		  .isCnpj();
 		this.cnpj = cnpj;
@@ -107,7 +107,7 @@ public class Company {
 	}
 
 	public void setEmail(String email) {
-		CompanyValidator.validate(corporateName)
+		CompanyValidator.validate(email)
 		  .isEmpty("Email must not be empty.")
 		  .isEmail();
 		this.email = email;
@@ -118,7 +118,7 @@ public class Company {
 	}
 
 	public void setPhone(String phone) {
-		CompanyValidator.validate(corporateName)
+		CompanyValidator.validate(phone)
 		  .isEmpty("Phone must not be empty.")
 		  .isPhone();
 		this.phone = phone;
