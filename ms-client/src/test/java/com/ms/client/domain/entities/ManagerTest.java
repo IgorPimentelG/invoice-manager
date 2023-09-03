@@ -131,4 +131,25 @@ public class ManagerTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throw an exception when create a user manager with born date in the future")
+	void testCreateUserManagerWithBornDateInTheFuture() {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
+			new Manager(
+			  "a7df6b1c-5c98-4317-b112-3407cae1406a",
+			  "000.000.000-00",
+			  "any full name",
+			  LocalDate.parse("2030-01-01"),
+			  "(00) 00000-0000",
+			  "any@mail.com",
+			  "anyPassword0"
+			);
+		});
+
+		String expectedMessage = "Date of birth cannot be in the future.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }

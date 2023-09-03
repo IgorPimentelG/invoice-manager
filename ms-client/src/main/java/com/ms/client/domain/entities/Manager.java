@@ -96,7 +96,6 @@ public class Manager {
 
 	public void setBornDate(LocalDate bornDate) {
 		ManagerValidator.validate(bornDate.toString())
-		  .isEmpty("Born date must not be empty.")
 		  .isBornDate()
 		  .isLegalAge();
 		this.bornDate = bornDate;
