@@ -106,4 +106,25 @@ public class CompanyTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throw an exception when create a company with empty CNPJ")
+	void testCreateUserManagerWithEmptyCNPJ() {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
+			new Company(
+			  "a7df6b1c-5c98-4317-b112-3407cae1406a",
+			  "any corporate name",
+			  TaxRegime.SIMPLE_NATIONAL,
+			  "",
+			  "any@mail.com",
+			  "(00) 00000-0000",
+			  manager
+			);
+		});
+
+		String expectedMessage = "CNPJ must not be empty.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
