@@ -173,4 +173,25 @@ public class ManagerTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throw an exception when create a user manager with empty phone")
+	void testCreateUserManagerWithEmptyPhone() {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
+			new Manager(
+			  "a7df6b1c-5c98-4317-b112-3407cae1406a",
+			  "000.000.000-00",
+			  "any full name",
+			  LocalDate.parse("1990-01-01"),
+			  "",
+			  "any@mail.com",
+			  "anyPassword0"
+			);
+		});
+
+		String expectedMessage = "Phone must not be empty.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
