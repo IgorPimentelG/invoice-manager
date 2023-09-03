@@ -152,4 +152,25 @@ public class ManagerTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throw an exception when create a user manager with born date illegal")
+	void testCreateUserManagerWithBornDateIllegal() {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
+			new Manager(
+			  "a7df6b1c-5c98-4317-b112-3407cae1406a",
+			  "000.000.000-00",
+			  "any full name",
+			  LocalDate.now(),
+			  "(00) 00000-0000",
+			  "any@mail.com",
+			  "anyPassword0"
+			);
+		});
+
+		String expectedMessage = "Only older than 18 years can register.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
