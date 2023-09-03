@@ -1,5 +1,6 @@
 package com.ms.client.domain.entities;
 
+import com.ms.client.domain.errors.FormatException;
 import com.ms.client.domain.errors.IncorrectValueException;
 import com.ms.client.domain.types.TaxRegime;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,6 +60,27 @@ public class CompanyTest {
 		});
 
 		String expectedMessage = "ID must not be empty.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
+
+	@Test
+	@DisplayName("should throw an exception when create a company with incorrect id format")
+	void testCreateCompanyWithIncorrectIdFormat() {
+		Exception exception = assertThrows(FormatException.class, () -> {
+			new Company(
+			  "1L",
+			  "any corporate name",
+			  TaxRegime.SIMPLE_NATIONAL,
+			  "00.000.000/0000-00",
+			  "any@mail.com",
+			  "(00) 00000-0000",
+			  manager
+			);
+		});
+
+		String expectedMessage = "ID must be a UUID.";
 		String resultMessage = exception.getMessage();
 
 		assertEquals(expectedMessage, resultMessage);
