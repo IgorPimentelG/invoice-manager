@@ -1,5 +1,6 @@
 package com.ms.client.domain.entities;
 
+import com.ms.client.domain.errors.IncorrectValueException;
 import com.ms.client.domain.types.TaxRegime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CompanyTest {
 
@@ -40,5 +41,26 @@ public class CompanyTest {
 		);
 
 		assertNotNull(result);
+	}
+
+	@Test
+	@DisplayName("should throw an exception when create a company with empty id")
+	void testCreateUserManagerWithEmptyId() {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
+			new Company(
+			  "",
+			  "any corporate name",
+			  TaxRegime.SIMPLE_NATIONAL,
+			  "00.000.000/0000-00",
+			  "any@mail.com",
+			  "(00) 00000-0000",
+			  manager
+			);
+		});
+
+		String expectedMessage = "ID must not be empty.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
 	}
 }
