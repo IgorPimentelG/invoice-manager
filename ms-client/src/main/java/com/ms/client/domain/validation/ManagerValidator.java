@@ -79,7 +79,7 @@ public abstract class ManagerValidator {
 			Matcher matcher = pattern.matcher(value);
 
 			if (!matcher.matches()) {
-				throw new IncorrectValueException(
+				throw new FormatException(
 				  "Password need minimum eight characters, at least one letter and one number."
 				);
 			}

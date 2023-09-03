@@ -279,4 +279,25 @@ public class ManagerTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throw an exception when create a user manager with incorrect password format")
+	void testCreateUserManagerWithIncorrectPasswordFormat() {
+		Exception exception = assertThrows(FormatException.class, () -> {
+			new Manager(
+			  "a7df6b1c-5c98-4317-b112-3407cae1406a",
+			  "000.000.000-00",
+			  "any full name",
+			  LocalDate.parse("1990-01-01"),
+			  "(00) 00000-0000",
+			  "any@mail.com",
+			  "123"
+			);
+		});
+
+		String expectedMessage = "Password need minimum eight characters, at least one letter and one number.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
