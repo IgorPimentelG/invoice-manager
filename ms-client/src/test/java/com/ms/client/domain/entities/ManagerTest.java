@@ -237,4 +237,25 @@ public class ManagerTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throw an exception when create a user manager with incorrect email format")
+	void testCreateUserManagerWithIncorrectEmailFormat() {
+		Exception exception = assertThrows(FormatException.class, () -> {
+			new Manager(
+			  "a7df6b1c-5c98-4317-b112-3407cae1406a",
+			  "000.000.000-00",
+			  "any full name",
+			  LocalDate.parse("1990-01-01"),
+			  "(00) 00000-0000",
+			  "any@",
+			  "anyPassword0"
+			);
+		});
+
+		String expectedMessage = "The email must be entered in the format: exemple@example.com";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
