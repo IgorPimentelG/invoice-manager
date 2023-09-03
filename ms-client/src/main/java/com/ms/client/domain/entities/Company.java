@@ -79,7 +79,7 @@ public class Company {
 
 	public void setCorporateName(String corporateName) {
 		CompanyValidator.validate(corporateName)
-		  .isEmpty("Corporate Name must not be empty.");
+		  .isEmpty("Corporate name must not be empty.");
 		this.corporateName = corporateName;
 	}
 

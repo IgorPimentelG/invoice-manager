@@ -45,6 +45,27 @@ public class CompanyTest {
 	}
 
 	@Test
+	@DisplayName("should throw an exception when create a company with incorrect id format")
+	void testCreateCompanyWithIncorrectIdFormat() {
+		Exception exception = assertThrows(FormatException.class, () -> {
+			new Company(
+			  "1L",
+			  "any corporate name",
+			  TaxRegime.SIMPLE_NATIONAL,
+			  "00.000.000/0000-00",
+			  "any@mail.com",
+			  "(00) 00000-0000",
+			  manager
+			);
+		});
+
+		String expectedMessage = "ID must be a UUID.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
+
+	@Test
 	@DisplayName("should throw an exception when create a company with empty id")
 	void testCreateUserManagerWithEmptyId() {
 		Exception exception = assertThrows(IncorrectValueException.class, () -> {
@@ -66,12 +87,12 @@ public class CompanyTest {
 	}
 
 	@Test
-	@DisplayName("should throw an exception when create a company with incorrect id format")
-	void testCreateCompanyWithIncorrectIdFormat() {
-		Exception exception = assertThrows(FormatException.class, () -> {
+	@DisplayName("should throw an exception when create a company with empty corporate name")
+	void testCreateUserManagerWithEmptyCorporateName() {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
 			new Company(
-			  "1L",
-			  "any corporate name",
+			  "a7df6b1c-5c98-4317-b112-3407cae1406a",
+			  "",
 			  TaxRegime.SIMPLE_NATIONAL,
 			  "00.000.000/0000-00",
 			  "any@mail.com",
@@ -80,7 +101,7 @@ public class CompanyTest {
 			);
 		});
 
-		String expectedMessage = "ID must be a UUID.";
+		String expectedMessage = "Corporate name must not be empty.";
 		String resultMessage = exception.getMessage();
 
 		assertEquals(expectedMessage, resultMessage);
