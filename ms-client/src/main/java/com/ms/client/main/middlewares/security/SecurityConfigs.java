@@ -1,4 +1,4 @@
-package com.ms.client.main.security;
+package com.ms.client.main.middlewares.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,9 +26,10 @@ public class SecurityConfigs {
 		  .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		  .authorizeHttpRequests(authorize -> authorize
 		    .requestMatchers(
-			  "/api/auth/signup",
-		      "/api/auth/signin",
-		      "/api/auth/reset"
+			  "/api/auth/sign-up",
+		      "/api/auth/sign-in",
+		      "/api/auth/reset",
+		      "/api/auth/change-password"
 		    ).permitAll()
 		    .anyRequest().authenticated()
 		  )

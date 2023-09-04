@@ -1,4 +1,4 @@
-package com.ms.client.main.security;
+package com.ms.client.main.middlewares.security;
 
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.errors.NotFoundException;
