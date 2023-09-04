@@ -25,7 +25,7 @@ public class AddressService {
 	public Address create(Address address) {
 
 		if (address == null) {
-			throw new BadRequestException("Address cannot be null.");
+			throw new BadRequestException("Data cannot be null.");
 		}
 
 		var entity = repository.save(address);
@@ -38,7 +38,7 @@ public class AddressService {
 	public Address update(Address address) {
 
 		if (address == null) {
-			throw new BadRequestException("Address cannot be null.");
+			throw new BadRequestException("Data cannot be null.");
 		}
 
 		var entity = repository.findById(address.getId())
