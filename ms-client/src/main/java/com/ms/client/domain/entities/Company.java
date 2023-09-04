@@ -4,11 +4,16 @@ import com.ms.client.domain.types.TaxRegime;
 import com.ms.client.domain.validation.CompanyValidator;
 import jakarta.persistence.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.*;
 
 @Entity
 @Table(name = "companies")
-public class Company {
+public class Company implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)

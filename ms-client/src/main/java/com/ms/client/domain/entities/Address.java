@@ -3,11 +3,16 @@ package com.ms.client.domain.entities;
 import com.ms.client.domain.validation.AddressValidator;
 import jakarta.persistence.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "addresses")
-public class Address {
+public class Address implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

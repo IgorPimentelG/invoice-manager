@@ -1,15 +1,24 @@
 package com.ms.client.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ms.client.domain.validation.ManagerValidator;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
 @Table(name = "managers")
-public class Manager {
+public class Manager implements Serializable, UserDetails {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
@@ -29,13 +38,32 @@ public class Manager {
 	@Column(unique = true)
 	private String email;
 
-	@JsonIgnore
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
+
+	@Column(name = "enabled")
+	private boolean isEnabled;
+
+	@Column(name = "account_non_expired")
+	private boolean isAccountNonExpired;
+
+	@Column(name = "account_non_locked")
+	private boolean isAccountNonLocked;
+
+	@Column(name = "credentials_non_expired")
+	private boolean isCredentialsNonExpired;
+
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
+
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
 
 	@OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private final List<Company> companies;
 
 	public Manager() {
+		activateAccount();
 		this.companies = new ArrayList<>();
 	}
 
@@ -55,7 +83,17 @@ public class Manager {
 		setEmail(email);
 		setPassword(password);
 
+		activateAccount();
+
 		this.companies = new ArrayList<>();
+	}
+
+	private void activateAccount() {
+		this.createdAt = LocalDateTime.now();
+		this.isEnabled = true;
+		this.isAccountNonExpired = true;
+		this.isAccountNonLocked = true;
+		this.isCredentialsNonExpired = true;
 	}
 
 	public String getId() {
@@ -135,12 +173,54 @@ public class Manager {
 		this.password = password;
 	}
 
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
 	public Collection<Company> getCompanies() {
 		return Collections.unmodifiableCollection(companies);
 	}
 
 	public void addCompany(Company company) {
 		this.companies.add(company);
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return new ArrayList<>();
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return isAccountNonExpired;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return isAccountNonLocked;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return isCredentialsNonExpired;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return isEnabled;
 	}
 
 	@Override
