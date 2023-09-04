@@ -211,4 +211,25 @@ public class CompanyTest {
 
 		assertEquals(expectedMessage, resultMessage);
 	}
+
+	@Test
+	@DisplayName("should throw an exception when create a company with incorrect phone format")
+	void testCreateCompanyWithIncorrectPhoneFormat() {
+		Exception exception = assertThrows(FormatException.class, () -> {
+			new Company(
+			  "4ff6d786-b7a1-4efc-be85-a297e04c2f48",
+			  "any corporate name",
+			  TaxRegime.SIMPLE_NATIONAL,
+			  "00.000.000/0000-00",
+			  "any@mail.com",
+			  "00000000000",
+			  manager
+			);
+		});
+
+		String expectedMessage = "The phone must be entered in the format: (xx) xxxxx-xxxx.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
