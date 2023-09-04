@@ -23,6 +23,7 @@ public class Company implements Serializable {
 	private String corporateName;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name = "tax_regime")
 	private TaxRegime taxRegime;
 
 	@Column(unique = true)

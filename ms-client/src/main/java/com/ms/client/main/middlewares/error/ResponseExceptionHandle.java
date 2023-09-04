@@ -18,6 +18,7 @@ public class ResponseExceptionHandle extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<ExceptionResponse> handleDefaultException(Exception ex) {
+		ex.printStackTrace();
 		return new ResponseEntity<>(
 		  responseFactory(ex, 400),
 		  HttpStatus.BAD_REQUEST

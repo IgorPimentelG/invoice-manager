@@ -3,8 +3,8 @@ package com.ms.client.infra.services;
 import com.ms.client.domain.entities.Address;
 import com.ms.client.infra.errors.BadRequestException;
 import com.ms.client.infra.errors.NotFoundException;
+import com.ms.client.infra.mappers.AddressMapper;
 import com.ms.client.infra.repositories.AddressRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +17,7 @@ public class AddressService {
 	@Autowired
 	private AddressRepository repository;
 
-	@Autowired
-	private ModelMapper mapper;
-
+	private final AddressMapper mapper = AddressMapper.INSTANCE;
 	private final Logger logger = Logger.getLogger(AddressService.class.getName());
 
 	public Address create(Address address) {

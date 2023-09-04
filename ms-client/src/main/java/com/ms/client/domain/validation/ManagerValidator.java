@@ -73,14 +73,15 @@ public abstract class ManagerValidator {
 
 		public ManagerValidationBuilder isPassword() {
 			Pattern pattern = Pattern.compile(
-			  "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
+			  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?!.*\\s).{8,}$",
 			  Pattern.CASE_INSENSITIVE
 			);
 			Matcher matcher = pattern.matcher(value);
 
 			if (!matcher.matches()) {
 				throw new FormatException(
-				  "Password need minimum eight characters, at least one letter and one number."
+				  "Password needs to have at least eight characters, at least one uppercase letter, " +
+				  "at least one lowercase letter, at least one number, and at least one special character."
 				);
 			}
 			return this;

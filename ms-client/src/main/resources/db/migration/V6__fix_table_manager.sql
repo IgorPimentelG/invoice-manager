@@ -1,0 +1,4 @@
+ALTER TABLE managers ADD COLUMN cpf CHAR(14) NOT NULL UNIQUE AFTER id;
+ALTER TABLE managers MODIFY COLUMN password VARCHAR(255) NOT NULL;
+ALTER TABLE managers RENAME COLUMN createdAt TO created_at;
+ALTER TABLE managers RENAME COLUMN updatedAt TO updated_at;

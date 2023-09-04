@@ -3,8 +3,8 @@ package com.ms.client.infra.services;
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.errors.BadRequestException;
 import com.ms.client.infra.errors.NotFoundException;
+import com.ms.client.infra.mappers.ManagerMapper;
 import com.ms.client.infra.repositories.ManagerRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,9 +21,7 @@ public class ManagerService {
 	@Autowired
 	private PasswordEncoder encoder;
 
-	@Autowired
-	private ModelMapper mapper;
-
+	private final ManagerMapper mapper = ManagerMapper.INSTANCE;
 	private final Logger logger = Logger.getLogger(ManagerService.class.getName());
 
 	public Manager create(Manager manager) {
@@ -52,7 +50,7 @@ public class ManagerService {
 		  .orElseThrow(() -> new NotFoundException("Manager"));
 
 		mapper.map(manager, entity);
-		repository.save(manager);
+		repository.save(entity);
 
 		logger.log(Level.INFO, "A address has been updated.");
 
