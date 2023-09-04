@@ -91,6 +91,19 @@ public class AddressServiceTest {
 	}
 
 	@Test
+	@DisplayName("should throws NotFoundException when find an address that does not exist")
+	void testFindAddressThatDoesNotExists() {
+		Exception exception = assertThrows(NotFoundException.class, () -> {
+			service.findById(1L);
+		});
+
+		String expectedMessage = "Address not found.";
+		String resultMessage = exception.getMessage();
+
+		assertEquals(expectedMessage, resultMessage);
+	}
+
+	@Test
 	@DisplayName("should delete an address")
 	void testDeleteAddress() {
 		when(repository.findById(any())).thenReturn(Optional.of(mock.createEntity()));
