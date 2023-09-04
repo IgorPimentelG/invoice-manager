@@ -22,7 +22,7 @@ public class AddressService {
 
 	private final Logger logger = Logger.getLogger(AddressService.class.getName());
 
-	public Address save(Address address) {
+	public Address create(Address address) {
 
 		if (address == null) {
 			throw new BadRequestException("Address cannot be null.");

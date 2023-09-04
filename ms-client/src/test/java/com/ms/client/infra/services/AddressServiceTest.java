@@ -1,6 +1,7 @@
 package com.ms.client.infra.services;
 
 import com.ms.client.domain.entities.Address;
+import com.ms.client.infra.errors.BadRequestException;
 import com.ms.client.infra.mocks.MockAddress;
 import com.ms.client.infra.repositories.AddressRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,13 +31,13 @@ public class AddressServiceTest {
 	}
 
 	@Test
-	@DisplayName("should create a address")
+	@DisplayName("should create an address")
 	void testCreateAddress() {
 		Address address = mock.createEntity();
 
 		when(repository.save(any())).thenReturn(address);
 
-		var result = service.save(address);
+		var result = service.create(address);
 
 		verify(repository, times(1)).save(any());
 		assertNotNull(result);
@@ -48,4 +49,17 @@ public class AddressServiceTest {
 		assertEquals(address.getZipCode(), result.getZipCode());
 	}
 
+	@Test
+	@DisplayName("should throws BadRequestException when create an address with null data")
+	void testCreateAddressWithNullData() {
+		Exception exception = assertThrows(BadRequestException.class, () -> {
+			service.create(null);
+		});
+
+		String expectedMessage = "Address cannot be null.";
+		String resultMessage = exception.getMessage();
+
+		verify(repository, times(0)).save(any());
+		assertEquals(expectedMessage, resultMessage);
+	}
 }
