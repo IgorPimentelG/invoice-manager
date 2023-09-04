@@ -10,6 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -23,6 +28,9 @@ public class AddressServiceTest {
 
 	@Mock
 	AddressRepository repository;
+
+	@Mock
+	ModelMapper mapper;
 
 	@BeforeEach
 	void setup() {
@@ -61,5 +69,15 @@ public class AddressServiceTest {
 
 		verify(repository, times(0)).save(any());
 		assertEquals(expectedMessage, resultMessage);
+	}
+
+	@Test
+	@DisplayName("should delete an address")
+	void testUpdateAddress() {
+		when(repository.findById(any())).thenReturn(Optional.of(mock.createEntity()));
+
+		service.delete(1L);
+
+		verify(repository, times(1)).delete(any());
 	}
 }
