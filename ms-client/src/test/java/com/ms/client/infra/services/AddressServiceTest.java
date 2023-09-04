@@ -73,6 +73,24 @@ public class AddressServiceTest {
 	}
 
 	@Test
+	@DisplayName("should find an address")
+	void testFindAddress() {
+		Address address = mock.createEntity();
+		when(repository.findById(any())).thenReturn(Optional.of(address));
+
+		var result = service.findById(1L);
+
+		verify(repository, times(1)).findById(any());
+		assertNotNull(result);
+		assertEquals(address.getId(), result.getId());
+		assertEquals(address.getCity(), result.getCity());
+		assertEquals(address.getNumber(), result.getNumber());
+		assertEquals(address.getState(), result.getState());
+		assertEquals(address.getNeighborhood(), result.getNeighborhood());
+		assertEquals(address.getZipCode(), result.getZipCode());
+	}
+
+	@Test
 	@DisplayName("should delete an address")
 	void testDeleteAddress() {
 		when(repository.findById(any())).thenReturn(Optional.of(mock.createEntity()));
