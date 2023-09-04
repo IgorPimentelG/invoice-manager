@@ -73,6 +73,21 @@ public class AddressServiceTest {
 	}
 
 	@Test
+	@DisplayName("should throws BadRequestException when update an address with null data")
+	void testUpdateAddressWithNullData() {
+		Exception exception = assertThrows(BadRequestException.class, () -> {
+			service.update(null);
+		});
+
+		String expectedMessage = "Address cannot be null.";
+		String resultMessage = exception.getMessage();
+
+		verify(repository, times(0)).save(any());
+		assertEquals(expectedMessage, resultMessage);
+	}
+
+
+	@Test
 	@DisplayName("should find an address")
 	void testFindAddress() {
 		Address address = mock.createEntity();
