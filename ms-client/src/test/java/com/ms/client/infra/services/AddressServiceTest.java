@@ -2,6 +2,7 @@ package com.ms.client.infra.services;
 
 import com.ms.client.domain.entities.Address;
 import com.ms.client.infra.errors.BadRequestException;
+import com.ms.client.infra.errors.NotFoundException;
 import com.ms.client.infra.mocks.MockAddress;
 import com.ms.client.infra.repositories.AddressRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,11 +74,25 @@ public class AddressServiceTest {
 
 	@Test
 	@DisplayName("should delete an address")
-	void testUpdateAddress() {
+	void testDeleteAddress() {
 		when(repository.findById(any())).thenReturn(Optional.of(mock.createEntity()));
 
 		service.delete(1L);
 
 		verify(repository, times(1)).delete(any());
+	}
+
+	@Test
+	@DisplayName("should throws NotFoundException when delete an address that does not exists")
+	void testDeleteAddressThatDoesNotExists() {
+		Exception exception = assertThrows(NotFoundException.class, () -> {
+			service.delete(1L);
+		});
+
+		String expectedMessage = "Address not found.";
+		String resultMessage = exception.getMessage();
+
+		verify(repository, times(0)).delete(any());
+		assertEquals(expectedMessage, resultMessage);
 	}
 }
