@@ -4,3 +4,16 @@ server:
 spring:
   application:
     name: service-gateway
+  config:
+    import: optional:file:service-gateway/.env[.properties]
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${SERVICE_REGISTRY_URL}
