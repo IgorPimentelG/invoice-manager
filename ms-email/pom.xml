@@ -6,11 +6,10 @@
 		<groupId>com.invoice.manager</groupId>
 		<artifactId>invoice-manager</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>com.ms</groupId>
-	<artifactId>email</artifactId>
+	<artifactId>ms-email</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ms-email</name>
 	<description>Microservice for sending email</description>
