@@ -6,6 +6,8 @@ spring:
     name: service-gateway
   config:
     import: optional:file:service-gateway/.env[.properties]
+  main:
+    web-application-type: reactive
   cloud:
     gateway:
       discovery:
