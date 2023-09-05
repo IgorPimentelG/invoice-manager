@@ -1,0 +1,8 @@
+server:
+  port: 8888
+
+spring:
+  name: service-config
+  config:
+    import: optional:file:service-config/.env[.properties]
+
