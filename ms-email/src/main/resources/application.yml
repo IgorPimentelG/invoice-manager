@@ -5,7 +5,11 @@ spring:
   application:
     name: ms-email
   config:
-    import: optional:file:ms-email/.env[.properties]
+    import:
+      - optional:file:ms-email/.env[.properties]
+      - optional:configserver:http://localhost:8888/
+  profiles:
+    active: dev
   datasource:
     url: jdbc:mysql://localhost:${DB_PORT}/${DB_DATABASE}
     username: ${DB_USERNAME}

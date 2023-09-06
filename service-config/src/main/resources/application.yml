@@ -2,7 +2,22 @@ server:
   port: 8888
 
 spring:
-  name: service-config
+  application:
+    name: service-config
   config:
     import: optional:file:service-config/.env[.properties]
+  profiles:
+    active:
+      - native
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/IgorPimentelG/invoice-manager/service-config
+          search-paths:
+            - 'config/*'
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${SERVICE_REGISTRY_URL}

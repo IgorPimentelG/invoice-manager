@@ -5,7 +5,11 @@ spring:
   application:
     name: ms-client
   config:
-    import: optional:file:ms-client/.env[.properties]
+    import:
+      - optional:file:ms-client/.env[.properties]
+      - optional:configserver:http://localhost:8888/
+  profiles:
+    active: dev
   datasource:
     url: jdbc:mysql://localhost:${DB_PORT}/${DB_DATABASE}
     username: ${DB_USERNAME}
