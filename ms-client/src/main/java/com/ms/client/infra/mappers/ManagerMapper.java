@@ -2,6 +2,7 @@ package com.ms.client.infra.mappers;
 
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.dtos.CreateManagerDto;
+import com.ms.client.infra.dtos.UpdateManagerDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -17,5 +18,6 @@ public interface ManagerMapper {
 	Manager createManager(CreateManagerDto managerDto);
 
 	@Mapping(target = "authorities", ignore = true)
+	@Mapping(target = "id", source = "id", ignore = true)
 	void map(Manager source, @MappingTarget Manager target);
 }

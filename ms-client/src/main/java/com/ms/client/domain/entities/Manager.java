@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ms.client.domain.validation.ManagerValidator;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,7 +16,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "managers")
-public class Manager implements Serializable, UserDetails {
+public class Manager extends RepresentationModel<Manager> implements Serializable, UserDetails {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -185,8 +186,8 @@ public class Manager implements Serializable, UserDetails {
 		this.updatedAt = updatedAt;
 	}
 
-	public Collection<Company> getCompanies() {
-		return Collections.unmodifiableCollection(companies);
+	public List<Company> getCompanies() {
+		return companies;
 	}
 
 	public void addCompany(Company company) {
@@ -221,6 +222,15 @@ public class Manager implements Serializable, UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return isEnabled;
+	}
+
+	public void disable() {
+		this.isEnabled = false;
+		this.isAccountNonLocked = false;
+		this.isAccountNonExpired = false;
+		this.isCredentialsNonExpired = false;
+
+		setUpdatedAt(LocalDateTime.now());
 	}
 
 	@Override

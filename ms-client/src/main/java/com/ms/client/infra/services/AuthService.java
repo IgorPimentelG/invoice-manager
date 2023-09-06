@@ -38,6 +38,11 @@ public class AuthService implements UserDetailsService {
 
 			var authenticatedManager = managerRepository.findByEmail(email)
 			  .orElseThrow(() -> new NotFoundException("Manager"));
+
+			if (!authenticatedManager.isEnabled()) {
+				throw new UnauthorizedException();
+			}
+
 			var token = tokenService.createToken(authenticatedManager);
 
 			return new AuthResponseDto(authenticatedManager, token);

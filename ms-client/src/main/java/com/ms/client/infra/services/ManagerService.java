@@ -3,12 +3,17 @@ package com.ms.client.infra.services;
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.errors.BadRequestException;
 import com.ms.client.infra.errors.NotFoundException;
+import com.ms.client.infra.errors.UnauthorizedException;
 import com.ms.client.infra.mappers.ManagerMapper;
 import com.ms.client.infra.repositories.ManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,12 +52,19 @@ public class ManagerService {
 		}
 
 		var entity = repository.findById(manager.getId())
-		  .orElseThrow(() -> new NotFoundException("Manager"));
+		  .orElseThrow(() -> {
+			  logger.log(Level.WARNING, "The manager does not exist.");
+			  return new NotFoundException("Manager");
+		  });
+
+		isAuthorized(entity);
 
 		mapper.map(manager, entity);
+		entity.setUpdatedAt(LocalDateTime.now());
+
 		repository.save(entity);
 
-		logger.log(Level.INFO, "A address has been updated.");
+		logger.log(Level.INFO, "A manager has been updated.");
 
 		return entity;
 	}
@@ -60,12 +72,40 @@ public class ManagerService {
 	public Manager findById(String id) {
 		var entity = repository.findById(id)
 		  .orElseThrow(() -> {
-			  logger.log(Level.WARNING, "The address does not exist.");
+			  logger.log(Level.WARNING, "The manager does not exist.");
 			  return new NotFoundException("Manager");
 		  });
+
+		isAuthorized(entity);
 
 		logger.log(Level.INFO, "The manager has been found.");
 
 		return entity;
+	}
+
+	public Manager disable(String id) {
+
+		var entity = repository.findById(id)
+		  .orElseThrow(() -> {
+			  logger.log(Level.WARNING, "The manager does not exist.");
+			  return new NotFoundException("Manager");
+		  });
+
+		isAuthorized(entity);
+
+		entity.disable();
+
+		logger.log(Level.INFO, "A manager has been disabled.");
+
+		return repository.save(entity);
+	}
+
+	private void isAuthorized(Manager manager) {
+		var auth = SecurityContextHolder.getContext().getAuthentication();
+		var autenticateManager = (Manager) auth.getPrincipal();
+
+		if (!autenticateManager.equals(manager)) {
+			throw new UnauthorizedException();
+		}
 	}
 }
