@@ -45,27 +45,33 @@ public class Manager extends RepresentationModel<Manager> implements Serializabl
 	@Column(name = "enabled")
 	private boolean isEnabled;
 
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(name = "account_non_expired")
 	private boolean isAccountNonExpired;
 
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(name = "account_non_locked")
 	private boolean isAccountNonLocked;
 
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(name = "credentials_non_expired")
 	private boolean isCredentialsNonExpired;
 
 	@Column(name = "created_at")
-	private LocalDateTime createdAt;
+	private final LocalDateTime createdAt;
 
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
-	@OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "manager", cascade = CascadeType.ALL)
 	private final List<Company> companies;
 
 	public Manager() {
 		activateAccount();
 		this.companies = new ArrayList<>();
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	public Manager(
@@ -87,10 +93,11 @@ public class Manager extends RepresentationModel<Manager> implements Serializabl
 		activateAccount();
 
 		this.companies = new ArrayList<>();
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	private void activateAccount() {
-		this.createdAt = LocalDateTime.now();
 		this.isEnabled = true;
 		this.isAccountNonExpired = true;
 		this.isAccountNonLocked = true;

@@ -7,8 +7,6 @@ import com.ms.client.infra.errors.UnauthorizedException;
 import com.ms.client.infra.mappers.ManagerMapper;
 import com.ms.client.infra.repositories.ManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,7 +28,6 @@ public class ManagerService {
 	private final Logger logger = Logger.getLogger(ManagerService.class.getName());
 
 	public Manager create(Manager manager) {
-
 		if (manager == null) {
 			throw new BadRequestException("Data cannot be null.");
 		}
@@ -46,17 +43,11 @@ public class ManagerService {
 	}
 
 	public Manager update(Manager manager) {
-
 		if (manager == null) {
 			throw new BadRequestException("Data cannot be null.");
 		}
 
-		var entity = repository.findById(manager.getId())
-		  .orElseThrow(() -> {
-			  logger.log(Level.WARNING, "The manager does not exist.");
-			  return new NotFoundException("Manager");
-		  });
-
+		var entity = findById(manager.getId());
 		isAuthorized(entity);
 
 		mapper.map(manager, entity);
@@ -84,13 +75,7 @@ public class ManagerService {
 	}
 
 	public Manager disable(String id) {
-
-		var entity = repository.findById(id)
-		  .orElseThrow(() -> {
-			  logger.log(Level.WARNING, "The manager does not exist.");
-			  return new NotFoundException("Manager");
-		  });
-
+		var entity = findById(id);
 		isAuthorized(entity);
 
 		entity.disable();

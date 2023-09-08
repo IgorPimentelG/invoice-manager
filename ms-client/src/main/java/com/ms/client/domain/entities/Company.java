@@ -3,14 +3,16 @@ package com.ms.client.domain.entities;
 import com.ms.client.domain.types.TaxRegime;
 import com.ms.client.domain.validation.CompanyValidator;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
 @Table(name = "companies")
-public class Company implements Serializable {
+public class Company extends RepresentationModel<Company> implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -45,8 +47,16 @@ public class Company implements Serializable {
 	)
 	private final List<Address> address;
 
+	@Column(name = "created_at")
+	private final LocalDateTime createdAt;
+
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
+
 	public Company() {
 		this.address = new ArrayList<>();
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	public Company(
@@ -66,6 +76,8 @@ public class Company implements Serializable {
 		setManager(manager);
 
 		this.address = new ArrayList<>();
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	public String getId() {
@@ -140,6 +152,18 @@ public class Company implements Serializable {
 
 	public Collection<Address> getAddress() {
 		return Collections.unmodifiableCollection(address);
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	public void addAddress(Address address) {
