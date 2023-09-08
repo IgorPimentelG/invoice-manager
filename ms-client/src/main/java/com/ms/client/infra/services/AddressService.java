@@ -21,7 +21,6 @@ public class AddressService {
 	private final Logger logger = Logger.getLogger(AddressService.class.getName());
 
 	public Address create(Address address) {
-
 		if (address == null) {
 			throw new BadRequestException("Data cannot be null.");
 		}
@@ -34,7 +33,6 @@ public class AddressService {
 	}
 
 	public Address update(Address address) {
-
 		if (address == null) {
 			throw new BadRequestException("Data cannot be null.");
 		}
@@ -63,7 +61,6 @@ public class AddressService {
 	}
 
 	public void delete(long id) {
-
 		var entity = repository.findById(id)
 		  .orElseThrow(() -> new NotFoundException("Address"));
 

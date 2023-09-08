@@ -4,6 +4,7 @@ import com.ms.client.domain.entities.Address;
 import com.ms.client.domain.entities.Company;
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.errors.BadRequestException;
+import com.ms.client.infra.errors.LockedException;
 import com.ms.client.infra.errors.NotFoundException;
 import com.ms.client.infra.errors.UnauthorizedException;
 import com.ms.client.infra.mappers.CompanyMapper;
@@ -124,6 +125,21 @@ public class CompanyService {
 		logger.log(Level.INFO, "The company has been deleted.");
 
 		repository.delete(entity);
+	}
+
+	public Company deleteAddress(String companyId, long addressId) {
+		var company = findById(companyId);
+		var address = addressService.findById(addressId);
+
+		if (company.getAddress().size() == 1) {
+			throw new LockedException("The company must have at least one registered address.");
+		}
+
+		company.getAddress().remove(address);
+		addressService.delete(address.getId());
+		repository.save(company);
+
+		return company;
 	}
 
 	private Authentication getAuthentication() {
