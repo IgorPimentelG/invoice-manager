@@ -1,7 +1,7 @@
 package com.ms.email.infra.services;
 
 import com.ms.email.domain.entities.Email;
-import com.ms.email.domain.errors.NotFoundException;
+import com.ms.email.infra.errors.NotFoundException;
 import com.ms.email.domain.types.Status;
 import com.ms.email.infra.repositories.EmailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class EmailService {
@@ -22,7 +23,9 @@ public class EmailService {
 	@Autowired
 	private JavaMailSender emailSender;
 
-	public void send(Email email) {
+	private final Logger logger = Logger.getLogger(EmailService.class.getName());
+
+	public Email send(Email email) {
 		try {
 			SimpleMailMessage message = new SimpleMailMessage();
 			message.setFrom(email.getFrom());
@@ -33,20 +36,32 @@ public class EmailService {
 			emailSender.send(message);
 
 			email.setStatus(Status.SENT);
+
+			logger.log(Level.INFO, "The email sent successfully");
 		} catch (Exception e) {
 			email.setStatus(Status.ERROR);
+
+			logger.log(Level.WARNING, "The email failed to be sent");
 		}
 
-		repository.save(email);
+		return repository.save(email);
 	}
 
-	public Email findById(String id) throws NotFoundException {
-		return repository.findById(id).orElseThrow(
-		  () -> new NotFoundException("The register of email was not found.")
+	public Email findById(String id) {
+		var entity =  repository.findById(id).orElseThrow(
+		  () -> {
+			  logger.log(Level.WARNING, "Email record not found.");
+			  return new NotFoundException("The register of email was not found.");
+		  }
 		);
+
+		logger.log(Level.INFO, "The email record was found.");
+
+		return entity;
 	}
 
 	public Page<Email> findAll(Pageable pageable) {
+		logger.log(Level.INFO, "List all email records.");
 		return repository.findAll(pageable);
 	}
 }

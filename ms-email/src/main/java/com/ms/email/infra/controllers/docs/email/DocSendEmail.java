@@ -1,7 +1,7 @@
 package com.ms.email.infra.controllers.docs.email;
 
+
 import com.ms.email.domain.entities.Email;
-import com.ms.email.infra.errors.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,13 +15,13 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "Find email register", description = "Returns the email register", tags = {"Email"})
+@Operation(summary = "Send email", description = "Returns the data of sent email", tags={"Email"})
 @ApiResponses({
-  @ApiResponse(responseCode = "200", description = "Registered email details", content = @Content(
-	schema = @Schema(implementation = Email.class)
-  )),
-  @ApiResponse(responseCode = "404", description = "Register email was not found", content = @Content(
-	schema = @Schema(implementation = NotFoundException.class)
-  ))
+  @ApiResponse(responseCode = "200", description = "The email was sent", content = {
+	@Content(mediaType = "application/json", schema = @Schema(implementation = Email.class))
+  }),
+  @ApiResponse(responseCode = "400", description = "The email was sent", content = {
+	@Content(mediaType = "application/json", schema = @Schema(implementation = Email.class))
+  })
 })
-public @interface DocFindEmailRegister {}
+public @interface DocSendEmail { }
