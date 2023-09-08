@@ -1,6 +1,6 @@
 package com.ms.email.domain.entities;
 
-import com.ms.email.domain.errors.InvalidValueException;
+import com.ms.email.domain.errors.IncorrectValueException;
 import com.ms.email.domain.factories.EmailFactory;
 import com.ms.email.domain.types.Status;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +12,7 @@ public class EmailTest {
 
 	@Test
 	@DisplayName("should create a new email")
-	void testCreateEmail() throws InvalidValueException {
+	void testCreateEmail() throws IncorrectValueException {
 		var result = new Email(
 		  "dcdafd9b-369a-4c3f-9df6-770c8428ff35",
 		  "72c02d05-feff-4a37-9b91-dbb01cedfa46",
@@ -29,7 +29,7 @@ public class EmailTest {
 
 	@Test
 	@DisplayName("should create a new email with factory")
-	void testCreateEmailWithFactory() throws InvalidValueException {
+	void testCreateEmailWithFactory() {
 		var result = EmailFactory.create(
 		  "any_to@mail.com",
 		  "any_subject",
@@ -44,7 +44,7 @@ public class EmailTest {
 	@DisplayName("should throws an InvalidValueException when create a new email with invalid id")
 	void testCreateEmailWithInvalidId() {
 
-		Exception exception = assertThrows(InvalidValueException.class, () -> {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
 			new Email(
 			  "invalid-id",
 			  "72c02d05-feff-4a37-9b91-dbb01cedfa46",
@@ -67,7 +67,7 @@ public class EmailTest {
 	@DisplayName("should throws an InvalidValueException when create a new email with invalid owner ref")
 	void testCreateEmailWithInvalidOwnerRef() {
 
-		Exception exception = assertThrows(InvalidValueException.class, () -> {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
 			new Email(
 			  "dcdafd9b-369a-4c3f-9df6-770c8428ff35",
 			  "invalid-owner-ref",
@@ -90,7 +90,7 @@ public class EmailTest {
 	@DisplayName("should throws an InvalidValueException when create a new email with invalid sender")
 	void testCreateEmailWithInvalidSender() {
 
-		Exception exception = assertThrows(InvalidValueException.class, () -> {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
 			new Email(
 			  "dcdafd9b-369a-4c3f-9df6-770c8428ff35",
 			  "72c02d05-feff-4a37-9b91-dbb01cedfa46",
@@ -113,7 +113,7 @@ public class EmailTest {
 	@DisplayName("should throws an InvalidValueException when create a new email with invalid recipient")
 	void testCreateEmailWithInvalidRecipient() {
 
-		Exception exception = assertThrows(InvalidValueException.class, () -> {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
 			new Email(
 			  "dcdafd9b-369a-4c3f-9df6-770c8428ff35",
 			  "72c02d05-feff-4a37-9b91-dbb01cedfa46",
@@ -136,7 +136,7 @@ public class EmailTest {
 	@DisplayName("should throws an InvalidValueException when create a new email with empty subject")
 	void testCreateEmailWithEmptySubject() {
 
-		Exception exception = assertThrows(InvalidValueException.class, () -> {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
 			new Email(
 			  "dcdafd9b-369a-4c3f-9df6-770c8428ff35",
 			  "72c02d05-feff-4a37-9b91-dbb01cedfa46",
@@ -159,7 +159,7 @@ public class EmailTest {
 	@DisplayName("should throws an InvalidValueException when create a new email with empty content")
 	void testCreateEmailWithEmptyContent() {
 
-		Exception exception = assertThrows(InvalidValueException.class, () -> {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
 			new Email(
 			  "dcdafd9b-369a-4c3f-9df6-770c8428ff35",
 			  "72c02d05-feff-4a37-9b91-dbb01cedfa46",
@@ -182,7 +182,7 @@ public class EmailTest {
 	@DisplayName("should throws an InvalidValueException when create a new email with date in the future")
 	void testCreateEmailWithDateInTheFuture() {
 
-		Exception exception = assertThrows(InvalidValueException.class, () -> {
+		Exception exception = assertThrows(IncorrectValueException.class, () -> {
 			new Email(
 			  "dcdafd9b-369a-4c3f-9df6-770c8428ff35",
 			  "72c02d05-feff-4a37-9b91-dbb01cedfa46",

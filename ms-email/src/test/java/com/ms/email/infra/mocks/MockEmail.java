@@ -8,11 +8,11 @@ import java.util.List;
 
 public class MockEmail {
 
-	public Email createEntity() throws Exception {
+	public Email createEntity() {
 		return createEntity(0);
 	}
 
-	public List<Email> createListEntity() throws Exception {
+	public List<Email> createListEntity() {
 		List<Email> records = new ArrayList<>();
 
 		for (int i = 0; i < 5; i++) {
@@ -22,7 +22,7 @@ public class MockEmail {
 		return records;
 	}
 
-	public Email createEntity(int index) throws Exception {
+	public Email createEntity(int index) {
 		return new Email(
 		  "dcdafd9b-369a-4c3f-9df6-770c8428ff35",
 		  "72c02d05-feff-4a37-9b91-dbb01cedfa46",
@@ -34,5 +34,4 @@ public class MockEmail {
 		  1693255833552L
 		);
 	}
-
 }

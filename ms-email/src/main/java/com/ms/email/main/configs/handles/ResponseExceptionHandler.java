@@ -1,6 +1,6 @@
 package com.ms.email.main.configs.handles;
 
-import com.ms.email.domain.errors.NotFoundException;
+import com.ms.email.infra.errors.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

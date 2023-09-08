@@ -1,7 +1,7 @@
 package com.ms.email.infra.services;
 
 import com.ms.email.domain.entities.Email;
-import com.ms.email.domain.errors.NotFoundException;
+import com.ms.email.infra.errors.NotFoundException;
 import com.ms.email.domain.types.Status;
 import com.ms.email.infra.mocks.MockEmail;
 import com.ms.email.infra.repositories.EmailRepository;
@@ -19,7 +19,6 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +45,7 @@ public class EmailServiceTest {
 
 	@Test
 	@DisplayName("should send an email")
-	void sendEmailTest() throws Exception {
+	void sendEmailTest() {
 		Email email = mockEmail.createEntity();
 
 		SimpleMailMessage message = new SimpleMailMessage();
@@ -64,7 +63,7 @@ public class EmailServiceTest {
 
 	@Test
 	@DisplayName("should update email status when email is not sent")
-	void updateEmailStatusTest() throws Exception {
+	void updateEmailStatusTest() {
 		Email email = mockEmail.createEntity();
 
 		SimpleMailMessage message = new SimpleMailMessage();
@@ -84,7 +83,7 @@ public class EmailServiceTest {
 
 	@Test
 	@DisplayName("should find an email record")
-	void findEmailRecordTest() throws Exception {
+	void findEmailRecordTest() {
 		Email email = mockEmail.createEntity();
 
 		when(repository.findById(any())).thenReturn(Optional.of(email));
@@ -104,7 +103,7 @@ public class EmailServiceTest {
 
 	@Test
 	@DisplayName("should throws NotFoundException when find an email record was not found")
-	void throwsNotFoundExceptionWhenFindEmailRecordWasNotFoundTest() throws Exception {
+	void throwsNotFoundExceptionWhenFindEmailRecordWasNotFoundTest() {
 
 		when(repository.findById(any())).thenReturn(Optional.empty());
 
@@ -121,7 +120,7 @@ public class EmailServiceTest {
 
 	@Test
 	@DisplayName("should find all email records")
-	void findAllEmailRecords() throws Exception {
+	void findAllEmailRecords() {
 		Page<Email> records = new PageImpl<>(mockEmail.createListEntity());
 		Pageable pageable = PageRequest.of(0, 1);
 

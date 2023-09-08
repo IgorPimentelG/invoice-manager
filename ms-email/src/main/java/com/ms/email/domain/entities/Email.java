@@ -1,7 +1,7 @@
 package com.ms.email.domain.entities;
 
-import com.ms.email.domain.helpers.Validation;
-import com.ms.email.domain.errors.InvalidValueException;
+import com.ms.email.domain.validation.EmailValidator;
+import com.ms.email.domain.errors.IncorrectValueException;
 import com.ms.email.domain.types.Status;
 import jakarta.persistence.*;
 
@@ -49,7 +49,7 @@ public class Email implements Serializable {
 	  String content,
 	  Status status,
 	  long createdAt
-	) throws InvalidValueException {
+	) throws IncorrectValueException {
 		setId(id);
 		setOwnerRef(ownerRef);
 		setFrom(from);
@@ -64,9 +64,10 @@ public class Email implements Serializable {
 		return id;
 	}
 
-	public void setId(String id) throws InvalidValueException {
-		Validation.isEmpty(id, "id");
-		Validation.ref(id, "id");
+	public void setId(String id) {
+		EmailValidator.validate(id)
+		  .isEmpty("id")
+		  .isRef("id");
 		this.id = id;
 	}
 
@@ -74,9 +75,10 @@ public class Email implements Serializable {
 		return ownerRef;
 	}
 
-	public void setOwnerRef(String ownerRef) throws InvalidValueException {
-		Validation.isEmpty(ownerRef, "ownerRef");
-		Validation.ref(ownerRef, "ownerRef");
+	public void setOwnerRef(String ownerRef) {
+		EmailValidator.validate(ownerRef)
+		  .isEmpty("ownerRef")
+		  .isRef("ownerRef");
 		this.ownerRef = ownerRef;
 	}
 
@@ -84,9 +86,9 @@ public class Email implements Serializable {
 		return from;
 	}
 
-	public void setFrom(String from) throws InvalidValueException {
-		Validation.emailAddress(from);
-		Validation.emailToYourself(from, this.to);
+	public void setFrom(String from) {
+		EmailValidator.validate(from)
+		  .isEmail();
 		this.from = from;
 	}
 
@@ -94,9 +96,10 @@ public class Email implements Serializable {
 		return to;
 	}
 
-	public void setTo(String to) throws InvalidValueException  {
-		Validation.emailAddress(to);
-		Validation.emailToYourself(this.from, to);
+	public void setTo(String to) {
+		EmailValidator.validate(to)
+		  .isEmail()
+		  .isEmailToYourself(this.from);
 		this.to = to;
 	}
 
@@ -104,8 +107,9 @@ public class Email implements Serializable {
 		return subject;
 	}
 
-	public void setSubject(String subject) throws InvalidValueException  {
-		Validation.isEmpty(subject, "subject");
+	public void setSubject(String subject) {
+		EmailValidator.validate(subject)
+		  .isEmpty("subject");
 		this.subject = subject;
 	}
 
@@ -113,8 +117,9 @@ public class Email implements Serializable {
 		return content;
 	}
 
-	public void setContent(String content) throws InvalidValueException {
-		Validation.isEmpty(content, "content");
+	public void setContent(String content) {
+		EmailValidator.validate(content)
+		  .isEmpty("content");
 		this.content = content;
 	}
 
@@ -122,8 +127,9 @@ public class Email implements Serializable {
 		return createdAt;
 	}
 
-	public void setCreatedAt(long createdAt) throws InvalidValueException {
-		Validation.isFuture(createdAt, "createdAt");
+	public void setCreatedAt(long createdAt) {
+		EmailValidator.validate(String.valueOf(createdAt))
+		  .isFuture("createdAt");
 		this.createdAt = createdAt;
 	}
 
