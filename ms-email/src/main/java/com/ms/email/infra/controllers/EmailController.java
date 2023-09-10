@@ -2,10 +2,10 @@ package com.ms.email.infra.controllers;
 
 import com.ms.email.domain.entities.Email;
 import com.ms.email.domain.factories.EmailFactory;
-import com.ms.email.infra.consumers.dtos.EmailDto;
 import com.ms.email.infra.controllers.docs.email.DocFindAllEmailRegisters;
 import com.ms.email.infra.controllers.docs.email.DocFindEmailRegister;
 import com.ms.email.infra.controllers.docs.email.DocSendEmail;
+import com.ms.email.infra.dtos.EmailDto;
 import com.ms.email.infra.services.EmailService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

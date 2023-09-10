@@ -1,4 +1,4 @@
-package com.ms.email.infra.consumers.dtos;
+package com.ms.email.infra.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

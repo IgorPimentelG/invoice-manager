@@ -5,9 +5,7 @@ spring:
   application:
     name: ms-email
   config:
-    import:
-      - optional:file:ms-email/.env[.properties]
-      - optional:configserver:http://localhost:8888/
+    import: optional:file:ms-email/.env[.properties]
   profiles:
     active: dev
   datasource:
@@ -28,9 +26,6 @@ spring:
           auth: true
           starttls:
             enable: true
-  rabbitmq:
-    addresses: ${AMQP_URL}
-    queue: ${AMQP_MS_EMAIL_QUEUE}
 
 eureka:
   client:
