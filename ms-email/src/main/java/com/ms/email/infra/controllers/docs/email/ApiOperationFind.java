@@ -24,4 +24,4 @@ import java.lang.annotation.Target;
 	schema = @Schema(implementation = NotFoundException.class)
   ))
 })
-public @interface DocFindEmailRegister {}
+public @interface ApiOperationFind {}
