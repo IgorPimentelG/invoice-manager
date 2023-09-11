@@ -1,12 +1,14 @@
 package com.ms.client.infra.controllers;
 
 import com.ms.client.domain.entities.Company;
+import com.ms.client.infra.controllers.docs.company.*;
 import com.ms.client.infra.dtos.CreateAddressDto;
 import com.ms.client.infra.dtos.CreateCompanyDto;
 import com.ms.client.infra.dtos.UpdateCompanyDto;
 import com.ms.client.infra.mappers.AddressMapper;
 import com.ms.client.infra.mappers.CompanyMapper;
 import com.ms.client.infra.services.CompanyService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/company")
+@Tag(name = "Company", description = "Endpoints for managing companies")
 public class CompanyController {
 
 	@Autowired
@@ -28,6 +31,7 @@ public class CompanyController {
 	private final AddressMapper addressMapper = AddressMapper.INSTANCE;
 	private final CompanyMapper companyMapper = CompanyMapper.INSTANCE;
 
+	@ApiOperationRegister
 	@PostMapping("/v1/register")
 	public ResponseEntity<Company> create(@RequestBody @Valid CreateCompanyDto data) {
 		var address = addressMapper.createAddress(data.address());
@@ -42,6 +46,7 @@ public class CompanyController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(result);
 	}
 
+	@ApiOperationAddAddress
 	@PatchMapping("/v1/add-address/{companyId}")
 	public ResponseEntity<Company> addAddress(
 	  @PathVariable("companyId") String companyId,
@@ -57,6 +62,7 @@ public class CompanyController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(result);
 	}
 
+	@ApiOperationUpdate
 	@PutMapping("/v1/update/{id}")
 	public ResponseEntity<Company> update(
 	  @PathVariable("id") String id,
@@ -74,6 +80,7 @@ public class CompanyController {
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
+	@ApiOperationTransfer
 	@PatchMapping("/v1/transfer/{companyId}/{managerId}")
 	public ResponseEntity<Company> transfer(
 	  @PathVariable("companyId") String companyId,
@@ -88,6 +95,7 @@ public class CompanyController {
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
+	@ApiOperationFind
 	@GetMapping("/v1/find/{id}")
 	public ResponseEntity<Company> find(@PathVariable("id") String id) {
 		var result = service.findById(id);
@@ -99,6 +107,7 @@ public class CompanyController {
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
+	@ApiOperationListAll
 	@GetMapping("/v1/list")
 	public ResponseEntity<List<Company>> listAll() {
 		var result = service.findAll();
@@ -112,12 +121,14 @@ public class CompanyController {
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
+	@ApiOperationDelete
 	@DeleteMapping("/v1/delete/{id}")
 	public ResponseEntity<?> delete(@PathVariable("id") String id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 
+	@ApiOperationDeleteAddress
 	@DeleteMapping("/v1/delete-address/{companyId}/{addressId}")
 	public ResponseEntity<Company> deleteAddress(
 	  @PathVariable("companyId") String companyId,

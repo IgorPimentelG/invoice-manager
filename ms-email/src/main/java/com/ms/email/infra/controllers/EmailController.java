@@ -2,9 +2,9 @@ package com.ms.email.infra.controllers;
 
 import com.ms.email.domain.entities.Email;
 import com.ms.email.domain.factories.EmailFactory;
-import com.ms.email.infra.controllers.docs.email.DocFindAllEmailRegisters;
-import com.ms.email.infra.controllers.docs.email.DocFindEmailRegister;
-import com.ms.email.infra.controllers.docs.email.DocSendEmail;
+import com.ms.email.infra.controllers.docs.email.ApiOperationFindAll;
+import com.ms.email.infra.controllers.docs.email.ApiOperationFind;
+import com.ms.email.infra.controllers.docs.email.ApiOperationSend;
 import com.ms.email.infra.dtos.EmailDto;
 import com.ms.email.infra.services.EmailService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +26,7 @@ public class EmailController {
 	@Autowired
 	private EmailService service;
 
-	@DocSendEmail
+	@ApiOperationSend
 	@PostMapping("/v1/send")
 	public ResponseEntity<Email> sendEmail(@RequestBody @Valid EmailDto emailDTO) {
 		Email email = EmailFactory.create(
@@ -40,14 +40,14 @@ public class EmailController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(body);
 	}
 
-	@DocFindEmailRegister
+	@ApiOperationFind
 	@GetMapping("/v1/{id}")
 	public ResponseEntity<Email> findById(@PathVariable("id") String id) {
 		var body =  service.findById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(body);
 	}
 
-	@DocFindAllEmailRegisters
+	@ApiOperationFindAll
 	@GetMapping("/v1/list-registers")
 	public ResponseEntity<Page<Email>> findAll(
 	  @RequestParam(value = "page", defaultValue = "0") int page,

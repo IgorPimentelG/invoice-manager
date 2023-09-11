@@ -31,6 +31,12 @@ public class CompanyService {
 	@Autowired
 	private ManagerService managerService;
 
+	@Autowired
+	private NotificationService notificationService;
+
+	@Autowired
+	private AuthService authService;
+
 	private final CompanyMapper mapper = CompanyMapper.INSTANCE;
 	private final Logger logger = Logger.getLogger(CompanyService.class.getName());
 
@@ -48,6 +54,16 @@ public class CompanyService {
 
 		var entity = repository.save(company);
 
+		String content = String.format(
+		  "The company with CNPJ %s has been created. You can now manage your tax taxes.",
+		  company.getCnpj()
+		);
+		notificationService.sendNotification(
+			manager.getEmail(),
+			content,
+			manager.getId()
+		);
+
 		logger.log(Level.INFO, "The company has been created.");
 
 		return entity;
@@ -59,6 +75,7 @@ public class CompanyService {
 		}
 
 		var entity = findById(company.getId());
+		authService.isAuthorized(entity.getManager());
 
 		mapper.map(company, entity);
 		entity.setUpdatedAt(LocalDateTime.now());
@@ -76,6 +93,8 @@ public class CompanyService {
 		}
 
 		var company = findById(companyId);
+		authService.isAuthorized(company.getManager());
+
 		var addressEntity = addressService.create(address);
 		company.addAddress(addressEntity);
 
@@ -89,11 +108,20 @@ public class CompanyService {
 	public Company transfer(String companyId, String managerId) {
 		var company = findById(companyId);
 		var manager = managerService.findById(managerId);
-
-		isAuthorized(company.getManager());
+		authService.isAuthorized(company.getManager());
 
 		company.setManager(manager);
 		repository.save(company);
+
+		String content = String.format(
+		  "The company with CNPJ %s has been transferred to manager with CPF %s.",
+		  company.getCnpj(),
+		  manager.getCpf());
+		notificationService.sendNotification(
+		    manager.getEmail(),
+		    content,
+		    manager.getId()
+		);
 
 		logger.log(Level.INFO, "The address has been transferred.");
 
@@ -120,7 +148,17 @@ public class CompanyService {
 
 	public void delete(String id) {
 		var entity = findById(id);
-		isAuthorized(entity.getManager());
+		authService.isAuthorized(entity.getManager());
+
+		String content = String.format(
+		  "The company with CNPJ %s has been deleted.",
+		  entity.getCnpj()
+		);
+		notificationService.sendNotification(
+		  entity.getManager().getEmail(),
+		  content,
+		  entity.getManager().getId()
+		);
 
 		logger.log(Level.INFO, "The company has been deleted.");
 
@@ -130,6 +168,7 @@ public class CompanyService {
 	public Company deleteAddress(String companyId, long addressId) {
 		var company = findById(companyId);
 		var address = addressService.findById(addressId);
+		authService.isAuthorized(company.getManager());
 
 		if (company.getAddress().size() == 1) {
 			throw new LockedException("The company must have at least one registered address.");
@@ -144,14 +183,5 @@ public class CompanyService {
 
 	private Authentication getAuthentication() {
 		return SecurityContextHolder.getContext().getAuthentication();
-	}
-
-	private void isAuthorized(Manager manager) {
-		var autenticateManager = (Manager) getAuthentication().getPrincipal();
-
-		if (!autenticateManager.equals(manager)) {
-			logger.log(Level.INFO, "Manager is not authorized.");
-			throw new UnauthorizedException();
-		}
 	}
 }

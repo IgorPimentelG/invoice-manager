@@ -1,8 +1,12 @@
 package com.ms.client.infra.controllers;
 
 import com.ms.client.domain.entities.Manager;
+import com.ms.client.infra.controllers.docs.manager.ApiOperationDisable;
+import com.ms.client.infra.controllers.docs.manager.ApiOperationFind;
+import com.ms.client.infra.controllers.docs.manager.ApiOperationUpdate;
 import com.ms.client.infra.dtos.UpdateManagerDto;
 import com.ms.client.infra.services.ManagerService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/manager")
+@Tag(name = "Manager", description = "Endpoints for managing the managers")
 public class ManagerController {
 
 	@Autowired
@@ -23,6 +28,7 @@ public class ManagerController {
 	@Autowired
 	private PasswordEncoder encoder;
 
+	@ApiOperationUpdate
 	@PutMapping("/v1/update/{id}")
 	public ResponseEntity<Manager> update(
 	  @PathVariable("id") String id,
@@ -39,21 +45,26 @@ public class ManagerController {
 		result.add(
 		  linkTo(methodOn(ManagerController.class).find(id)).withSelfRel()
 		);
+
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
+	@ApiOperationFind
 	@GetMapping("/v1/find/{id}")
 	public ResponseEntity<Manager> find(@PathVariable("id") String id) {
 		var result = service.findById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
+	@ApiOperationDisable
 	@PatchMapping("/v1/disable/{id}")
 	public ResponseEntity<Manager> disable(@PathVariable("id") String id) {
 		var result = service.disable(id);
+
 		result.add(
 		  linkTo(methodOn(ManagerController.class).find(id)).withSelfRel()
 		);
+
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 }

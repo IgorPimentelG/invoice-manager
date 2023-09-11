@@ -24,6 +24,12 @@ public class ManagerService {
 	@Autowired
 	private PasswordEncoder encoder;
 
+	@Autowired
+	private NotificationService notificationService;
+
+	@Autowired
+	private AuthService authService;
+
 	private final ManagerMapper mapper = ManagerMapper.INSTANCE;
 	private final Logger logger = Logger.getLogger(ManagerService.class.getName());
 
@@ -48,7 +54,7 @@ public class ManagerService {
 		}
 
 		var entity = findById(manager.getId());
-		isAuthorized(entity);
+		authService.isAuthorized(entity);
 
 		mapper.map(manager, entity);
 		entity.setUpdatedAt(LocalDateTime.now());
@@ -67,8 +73,6 @@ public class ManagerService {
 			  return new NotFoundException("Manager");
 		  });
 
-		isAuthorized(entity);
-
 		logger.log(Level.INFO, "The manager has been found.");
 
 		return entity;
@@ -76,21 +80,18 @@ public class ManagerService {
 
 	public Manager disable(String id) {
 		var entity = findById(id);
-		isAuthorized(entity);
+		authService.isAuthorized(entity);
 
 		entity.disable();
+
+		notificationService.sendNotification(
+		  entity.getEmail(),
+		  "Your account has been disabled",
+		  entity.getId()
+		);
 
 		logger.log(Level.INFO, "A manager has been disabled.");
 
 		return repository.save(entity);
-	}
-
-	private void isAuthorized(Manager manager) {
-		var auth = SecurityContextHolder.getContext().getAuthentication();
-		var autenticateManager = (Manager) auth.getPrincipal();
-
-		if (!autenticateManager.equals(manager)) {
-			throw new UnauthorizedException();
-		}
 	}
 }
