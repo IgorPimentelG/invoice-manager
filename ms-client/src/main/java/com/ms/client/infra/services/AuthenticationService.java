@@ -9,14 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthService implements UserDetailsService {
+public class AuthenticationService implements UserDetailsService {
 
 	@Autowired
 	private TokenService tokenService;
@@ -63,15 +62,6 @@ public class AuthService implements UserDetailsService {
 		var token = tokenService.refreshToken(refreshToken);
 
 		return new AuthResponseDto(manager, token);
-	}
-
-	public void isAuthorized(Manager manager) {
-		var auth = SecurityContextHolder.getContext().getAuthentication();
-		var autenticateManager = (Manager) auth.getPrincipal();
-
-		if (!autenticateManager.equals(manager)) {
-			throw new UnauthorizedException();
-		}
 	}
 
 	@Override

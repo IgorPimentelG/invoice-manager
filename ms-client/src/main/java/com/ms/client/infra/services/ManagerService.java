@@ -3,11 +3,10 @@ package com.ms.client.infra.services;
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.errors.BadRequestException;
 import com.ms.client.infra.errors.NotFoundException;
-import com.ms.client.infra.errors.UnauthorizedException;
 import com.ms.client.infra.mappers.ManagerMapper;
 import com.ms.client.infra.repositories.ManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +24,13 @@ public class ManagerService {
 	private PasswordEncoder encoder;
 
 	@Autowired
-	private NotificationService notificationService;
+	private AccountService accountService;
 
 	@Autowired
-	private AuthService authService;
+	private AuthorizationService authorizationService;
+
+	@Autowired
+	private NotificationService notificationService;
 
 	private final ManagerMapper mapper = ManagerMapper.INSTANCE;
 	private final Logger logger = Logger.getLogger(ManagerService.class.getName());
@@ -42,6 +44,17 @@ public class ManagerService {
 		  encoder.encode(manager.getPassword())
 		);
 		var entity = repository.save(manager);
+		var code = accountService.generateCode(entity);
+
+		String content = String.format(
+		  "Your account has been created. Please confirm your code to active your account. Code: %s",
+		  code
+		);
+		notificationService.sendNotification(
+		  entity.getEmail(),
+		  content,
+		  entity.getId()
+		);
 
 		logger.log(Level.INFO, "A new manager has been saved.");
 
@@ -54,7 +67,7 @@ public class ManagerService {
 		}
 
 		var entity = findById(manager.getId());
-		authService.isAuthorized(entity);
+		authorizationService.isAuthorized(entity);
 
 		mapper.map(manager, entity);
 		entity.setUpdatedAt(LocalDateTime.now());
@@ -80,7 +93,7 @@ public class ManagerService {
 
 	public Manager disable(String id) {
 		var entity = findById(id);
-		authService.isAuthorized(entity);
+		authorizationService.isAuthorized(entity);
 
 		entity.disable();
 

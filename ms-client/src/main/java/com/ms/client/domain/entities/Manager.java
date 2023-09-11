@@ -67,11 +67,15 @@ public class Manager extends RepresentationModel<Manager> implements Serializabl
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "manager", cascade = CascadeType.ALL)
 	private final List<Company> companies;
 
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "manager", cascade = CascadeType.ALL)
+	private final List<AccountVerification> accountVerifications;
+
 	public Manager() {
-		activateAccount();
+		disable();
 		this.companies = new ArrayList<>();
+		this.accountVerifications = new ArrayList<>();
 		this.createdAt = LocalDateTime.now();
-		this.updatedAt = LocalDateTime.now();
 	}
 
 	public Manager(
@@ -90,18 +94,19 @@ public class Manager extends RepresentationModel<Manager> implements Serializabl
 		setEmail(email);
 		setPassword(password);
 
-		activateAccount();
+		disable();
 
 		this.companies = new ArrayList<>();
+		this.accountVerifications = new ArrayList<>();
 		this.createdAt = LocalDateTime.now();
-		this.updatedAt = LocalDateTime.now();
 	}
 
-	private void activateAccount() {
+	public void activateAccount() {
 		this.isEnabled = true;
 		this.isAccountNonExpired = true;
 		this.isAccountNonLocked = true;
 		this.isCredentialsNonExpired = true;
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	public String getId() {
@@ -199,6 +204,14 @@ public class Manager extends RepresentationModel<Manager> implements Serializabl
 
 	public void addCompany(Company company) {
 		this.companies.add(company);
+	}
+
+	public void addAccountVerification(AccountVerification accountVerification) {
+		this.accountVerifications.add(accountVerification);
+	}
+
+	public List<AccountVerification> getAccountVerifications() {
+		return accountVerifications;
 	}
 
 	@Override

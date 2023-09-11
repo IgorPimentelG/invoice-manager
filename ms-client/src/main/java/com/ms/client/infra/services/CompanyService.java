@@ -6,7 +6,6 @@ import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.errors.BadRequestException;
 import com.ms.client.infra.errors.LockedException;
 import com.ms.client.infra.errors.NotFoundException;
-import com.ms.client.infra.errors.UnauthorizedException;
 import com.ms.client.infra.mappers.CompanyMapper;
 import com.ms.client.infra.repositories.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ public class CompanyService {
 	private NotificationService notificationService;
 
 	@Autowired
-	private AuthService authService;
+	private AuthorizationService authorizationService;
 
 	private final CompanyMapper mapper = CompanyMapper.INSTANCE;
 	private final Logger logger = Logger.getLogger(CompanyService.class.getName());
@@ -46,7 +45,7 @@ public class CompanyService {
 		}
 
 		var companyAddress = addressService.create(address);
-		var currentManager = (Manager) getAuthentication().getPrincipal();
+		var currentManager = authorizationService.getAuthenticatedUser();
 		var manager = managerService.findById(currentManager.getId());
 
 		company.addAddress(companyAddress);
@@ -75,7 +74,7 @@ public class CompanyService {
 		}
 
 		var entity = findById(company.getId());
-		authService.isAuthorized(entity.getManager());
+		authorizationService.isAuthorized(entity.getManager());
 
 		mapper.map(company, entity);
 		entity.setUpdatedAt(LocalDateTime.now());
@@ -93,7 +92,7 @@ public class CompanyService {
 		}
 
 		var company = findById(companyId);
-		authService.isAuthorized(company.getManager());
+		authorizationService.isAuthorized(company.getManager());
 
 		var addressEntity = addressService.create(address);
 		company.addAddress(addressEntity);
@@ -108,7 +107,7 @@ public class CompanyService {
 	public Company transfer(String companyId, String managerId) {
 		var company = findById(companyId);
 		var manager = managerService.findById(managerId);
-		authService.isAuthorized(company.getManager());
+		authorizationService.isAuthorized(company.getManager());
 
 		company.setManager(manager);
 		repository.save(company);
@@ -141,14 +140,14 @@ public class CompanyService {
 	}
 
 	public List<Company> findAll() {
-		var manager = (Manager) getAuthentication().getPrincipal();
+		var manager = authorizationService.getAuthenticatedUser();
 		logger.log(Level.INFO, "All companies has been found.");
 		return manager.getCompanies();
 	}
 
 	public void delete(String id) {
 		var entity = findById(id);
-		authService.isAuthorized(entity.getManager());
+		authorizationService.isAuthorized(entity.getManager());
 
 		String content = String.format(
 		  "The company with CNPJ %s has been deleted.",
@@ -168,7 +167,7 @@ public class CompanyService {
 	public Company deleteAddress(String companyId, long addressId) {
 		var company = findById(companyId);
 		var address = addressService.findById(addressId);
-		authService.isAuthorized(company.getManager());
+		authorizationService.isAuthorized(company.getManager());
 
 		if (company.getAddress().size() == 1) {
 			throw new LockedException("The company must have at least one registered address.");
@@ -179,9 +178,5 @@ public class CompanyService {
 		repository.save(company);
 
 		return company;
-	}
-
-	private Authentication getAuthentication() {
-		return SecurityContextHolder.getContext().getAuthentication();
 	}
 }

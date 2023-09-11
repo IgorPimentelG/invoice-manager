@@ -8,7 +8,8 @@ import com.ms.client.infra.dtos.AuthResponseDto;
 import com.ms.client.infra.dtos.CreateManagerDto;
 import com.ms.client.infra.dtos.ManagerCredentials;
 import com.ms.client.infra.mappers.ManagerMapper;
-import com.ms.client.infra.services.AuthService;
+import com.ms.client.infra.services.AccountService;
+import com.ms.client.infra.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,10 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
 	@Autowired
-	private AuthService service;
+	private AuthenticationService service;
+
+	@Autowired
+	private AccountService accountService;
 
 	private final ManagerMapper mapper = ManagerMapper.INSTANCE;
 
@@ -48,6 +52,15 @@ public class AuthController {
 	  @RequestHeader("Authorization") String refreshToken
 	) {
 		var response = service.refreshToken(email, refreshToken);
-		return  ResponseEntity.ok(response);
+		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/verify-code/{managerId}/{code}")
+	public ResponseEntity<?> verifyCode(
+	  @PathVariable("managerId") String managerId,
+	  @PathVariable("code") String code
+	) {
+		accountService.verifyCode(managerId, code);
+		return ResponseEntity.noContent().build();
 	}
 }

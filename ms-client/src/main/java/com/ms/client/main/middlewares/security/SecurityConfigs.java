@@ -30,6 +30,8 @@ public class SecurityConfigs {
 		      "/api/auth/sign-in",
 		      "/api/auth/reset",
 		      "/api/auth/change-password",
+		      "/api/auth/verify-code/**",
+		      "/api/auth/recover-account",
 		      "/swagger-ui/**",
 		      "/v3/api-docs/**",
 		      "/actuator/**"
