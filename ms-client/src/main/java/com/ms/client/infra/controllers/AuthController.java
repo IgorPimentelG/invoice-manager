@@ -4,6 +4,7 @@ import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.controllers.docs.auth.ApiOperationRefresh;
 import com.ms.client.infra.controllers.docs.auth.ApiOperationSignIn;
 import com.ms.client.infra.controllers.docs.auth.ApiOperationSignUp;
+import com.ms.client.infra.controllers.docs.auth.ApiOperationVerifyCode;
 import com.ms.client.infra.dtos.AuthResponseDto;
 import com.ms.client.infra.dtos.CreateManagerDto;
 import com.ms.client.infra.dtos.ManagerCredentials;
@@ -15,6 +16,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.hateoas.server.core.DummyInvocationUtils.methodOn;
+import static org.springframework.hateoas.server.core.WebHandler.linkTo;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -41,7 +45,6 @@ public class AuthController {
 	public ResponseEntity<Manager> signUp(@RequestBody @Valid CreateManagerDto managerDto) {
 		var manager = mapper.createManager(managerDto);
 		var response = service.signUp(manager);
-
 		return ResponseEntity.ok(response);
 	}
 
@@ -55,6 +58,7 @@ public class AuthController {
 		return ResponseEntity.ok(response);
 	}
 
+	@ApiOperationVerifyCode
 	@PostMapping("/verify-code/{managerId}/{code}")
 	public ResponseEntity<?> verifyCode(
 	  @PathVariable("managerId") String managerId,

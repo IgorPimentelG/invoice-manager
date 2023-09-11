@@ -34,7 +34,9 @@ public class AccountService {
 		  .orElseThrow(() -> new NotFoundException("Verification not found."));
 
 		if (!verification.getCode().equals(code)) {
-			throw new BadRequestException("Code is invalid.");
+			throw new BadRequestException("The code is invalid.");
+		} else if (verification.getExpiresAt().isAfter(LocalDateTime.now())) {
+			throw new BadRequestException("The code is expired.");
 		}
 
 		verification.setChecked(true);
