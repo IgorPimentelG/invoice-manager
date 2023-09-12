@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: ms-electronic-invoice
+  config:
+    import: optional:file:ms-electronic-invoice/.env[.properties]
+  profiles:
+    active: dev
