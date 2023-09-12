@@ -26,8 +26,18 @@ spring:
           auth: true
           starttls:
             enable: true
+  rabbitmq:
+    host: ${AMQP_HOST}
+    port: ${AMQP_PORT}
+    username: ${AMQP_USERNAME}
+    password: ${AMQP_PASSWORD}
 
 eureka:
   client:
     serviceUrl:
       defaultZone: ${SERVICE_REGISTRY_URL}
+
+
+
+queues:
+  notification: ms-email.v1.send-email
