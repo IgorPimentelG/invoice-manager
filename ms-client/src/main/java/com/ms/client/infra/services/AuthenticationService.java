@@ -2,6 +2,7 @@ package com.ms.client.infra.services;
 
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.dtos.AuthResponseDto;
+import com.ms.client.infra.errors.BadRequestException;
 import com.ms.client.infra.errors.NotFoundException;
 import com.ms.client.infra.errors.UnauthorizedException;
 import com.ms.client.infra.repositories.ManagerRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +26,16 @@ public class AuthenticationService implements UserDetailsService {
 	private ManagerService managerService;
 
 	@Autowired
+	private AccountService accountService;
+
+	@Autowired
+	private NotificationService notificationService;
+
+	@Autowired
 	private ManagerRepository managerRepository;
+
+	@Autowired
+	private PasswordEncoder encoder;
 
 	@Autowired
 	@Lazy
@@ -62,6 +73,42 @@ public class AuthenticationService implements UserDetailsService {
 		var token = tokenService.refreshToken(refreshToken);
 
 		return new AuthResponseDto(manager, token);
+	}
+
+	public void recoverAccount(String email) {
+
+		var manager = managerRepository.findByEmail(email)
+		  .orElseThrow(() -> new NotFoundException("Manager"));
+
+		var code = accountService.generateCode(manager);
+
+		String content = String.format("Confirm code %s to continue.", code);
+		notificationService.sendNotification(
+		  manager.getEmail(),
+		  content,
+		  manager.getId()
+		);
+	}
+
+	public void changePassword(String email, String code, String password, String passwordConfirmation) {
+
+		if (!password.equals(passwordConfirmation)) {
+			throw new BadRequestException("The passwords are different.");
+		}
+
+		var manager = managerRepository.findByEmail(email)
+		  .orElseThrow(() -> new NotFoundException("Manager"));
+
+		if (!manager.isEnabled()) {
+			throw new UnauthorizedException();
+		}
+
+		accountService.verifyCode(manager.getId(), code);
+
+		var passwordEncrypted = encoder.encode(password);
+		manager.setPassword(passwordEncrypted);
+
+		managerRepository.save(manager);
 	}
 
 	@Override

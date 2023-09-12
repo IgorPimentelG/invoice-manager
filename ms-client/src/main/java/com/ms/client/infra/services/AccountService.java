@@ -30,12 +30,14 @@ public class AccountService {
 	}
 
 	public void verifyCode(String managerId, String code) {
-		var verification = repository.findByManagerId(managerId)
+		var verifications = repository.findByManagerId(managerId)
 		  .orElseThrow(() -> new NotFoundException("Verification not found."));
 
-		if (!verification.getCode().equals(code)) {
+		var verification = verifications.get(verifications.size() - 1);
+
+		if (!verification.getCode().equals(code) || verification.isChecked()) {
 			throw new BadRequestException("The code is invalid.");
-		} else if (verification.getExpiresAt().isAfter(LocalDateTime.now())) {
+		} else if (verification.getExpiresAt().isBefore(LocalDateTime.now())) {
 			throw new BadRequestException("The code is expired.");
 		}
 

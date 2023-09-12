@@ -1,11 +1,9 @@
 package com.ms.client.infra.controllers;
 
 import com.ms.client.domain.entities.Manager;
-import com.ms.client.infra.controllers.docs.auth.ApiOperationRefresh;
-import com.ms.client.infra.controllers.docs.auth.ApiOperationSignIn;
-import com.ms.client.infra.controllers.docs.auth.ApiOperationSignUp;
-import com.ms.client.infra.controllers.docs.auth.ApiOperationVerifyCode;
+import com.ms.client.infra.controllers.docs.auth.*;
 import com.ms.client.infra.dtos.AuthResponseDto;
+import com.ms.client.infra.dtos.ChangePasswordDto;
 import com.ms.client.infra.dtos.CreateManagerDto;
 import com.ms.client.infra.dtos.ManagerCredentials;
 import com.ms.client.infra.mappers.ManagerMapper;
@@ -66,5 +64,22 @@ public class AuthController {
 	) {
 		accountService.verifyCode(managerId, code);
 		return ResponseEntity.noContent().build();
+	}
+
+	@ApiOperationRecoverAccount
+	@PostMapping("/recover-account/{email}")
+	public ResponseEntity<String> recoverAccount(@PathVariable("email") String email) {
+		service.recoverAccount(email);
+		return ResponseEntity.ok("Verify your email.");
+	}
+
+	@ApiOperationChangePassword
+	@PostMapping("/change-password/{email}/{code}")
+	public ResponseEntity<String> changePassword(
+	  @PathVariable("email") String email,
+	  @PathVariable("code") String code,
+	  @RequestBody @Valid ChangePasswordDto data) {
+		service.changePassword(email, code, data.password(), data.passwordConfirmation());
+		return ResponseEntity.ok("Your password has been changed.");
 	}
 }
