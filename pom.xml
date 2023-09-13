@@ -18,6 +18,7 @@
         <module>ms-email</module>
         <module>ms-client</module>
         <module>ms-electronic-invoice</module>
+        <module>ms-tax-calculator</module>
         <module>service-registry</module>
         <module>service-gateway</module>
     </modules>

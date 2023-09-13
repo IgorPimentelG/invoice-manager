@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: ms-tax-calculator
+  config:
+    import: optional:file:ms-tax-calculator/.env[.properties]
+    profiles:
+      active: dev
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${SERVICE_REGISTRY_URL}
