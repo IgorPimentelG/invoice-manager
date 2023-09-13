@@ -5,3 +5,15 @@ spring:
     import: optional:file:ms-electronic-invoice/.env[.properties]
   profiles:
     active: dev
+  datasource:
+    url: jdbc:mysql://localhost:${DB_PORT}/${DB_DATABASE}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${SERVICE_REGISTRY_URL}

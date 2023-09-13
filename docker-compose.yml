@@ -9,3 +9,25 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
 
+  db-ms-electronic-invoice:
+    image: mysql:8.1
+    restart: on-failure
+    ports:
+      - '${DB_MS_ELECTRONIC_INVOICE_PORT}:${DB_MS_ELECTRONIC_INVOICE_PORT}'
+    volumes:
+      - mysql_data_ms_electronic_invoice:/var/lib/mysql
+    environment:
+      MYSQL_TCP_PORT: ${DB_MS_ELECTRONIC_INVOICE_PORT}
+      MYSQL_DATABASE: ${DB_MS_ELECTRONIC_INVOICE_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    networks:
+      - ms-electronic-invoice-network
+
+volumes:
+  mysql_data_ms_electronic_invoice:
+
+networks:
+  ms-electronic-invoice-network:
+    driver: bridge
