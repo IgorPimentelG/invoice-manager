@@ -37,7 +37,8 @@ eureka:
     serviceUrl:
       defaultZone: ${SERVICE_REGISTRY_URL}
 
-
-
 queues:
   notification: ms-email.v1.send-email
+
+springdoc:
+  show-actuator: true

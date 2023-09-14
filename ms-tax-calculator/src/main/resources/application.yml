@@ -10,3 +10,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: ${SERVICE_REGISTRY_URL}
+
+springdoc:
+  show-actuator: true

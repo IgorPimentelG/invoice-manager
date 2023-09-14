@@ -35,3 +35,6 @@ eureka:
 
 queues:
   notification: ms-email.v1.send-email
+
+springdoc:
+  show-actuator: true

@@ -32,8 +32,8 @@ public class SecurityConfigs {
 		      "/api/auth/change-password/**",
 		      "/api/auth/verify-code/**",
 		      "/api/auth/recover-account/**",
-		      "/swagger-ui/**",
 		      "/v3/api-docs/**",
+		      "/swagger-ui/**",
 		      "/actuator/**"
 		    ).permitAll()
 		    .anyRequest().authenticated()

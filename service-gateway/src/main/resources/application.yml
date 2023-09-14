@@ -1,5 +1,7 @@
 server:
   port: 8080
+  servlet:
+    context-path: /
 
 spring:
   application:
@@ -14,6 +16,29 @@ spring:
         locator:
           enabled: true
           lowerCaseServiceId: true
+      routes:
+        - id: ms-client
+          uri: lb://ms-client
+          predicates:
+            - Path=/ms-client/**
+        - id: ms-email
+          uri: lb://ms-email
+          predicates:
+            - Path=/ms-email/**
+        - id: ms-electronic-invoice
+          uri: lb://ms-electronic-invoice
+          predicates:
+            - Path=/ms-electronic-invoice/**
+        - id: ms-tax-calculator
+          uri: lb://ms-tax-calculator
+          predicates:
+            - Path=/ms-tax-calculator/**
+        - id: openapi
+          uri: lb://service-gateway
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
 
 eureka:
   client:
