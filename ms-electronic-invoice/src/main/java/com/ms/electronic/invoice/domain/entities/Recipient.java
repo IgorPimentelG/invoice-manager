@@ -110,7 +110,7 @@ public class Recipient {
 	}
 
 	public void addInvoice(Invoice invoice) {
-		this.invoices.add(invoice);
+		invoices.add(invoice);
 	}
 
 	@Override

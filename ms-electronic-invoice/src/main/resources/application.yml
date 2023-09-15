@@ -13,6 +13,9 @@ spring:
     hibernate:
       ddl-auto: none
 
+security:
+  secret-key: ${CODE_SECRET_KEY}
+
 eureka:
   client:
     serviceUrl:

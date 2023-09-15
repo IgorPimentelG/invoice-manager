@@ -70,6 +70,14 @@ public class Issuer {
 		this.address = address;
 	}
 
+	public List<Invoice> getInvoices() {
+		return invoices;
+	}
+
+	public void addInvoice(Invoice invoice) {
+		invoices.add(invoice);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
