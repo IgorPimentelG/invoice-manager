@@ -1,6 +1,7 @@
 version: '3.9'
 services:
   rabbitmq:
+    container_name: 001-rabbitmq
     image: rabbitmq:3.12.4-management
     ports:
       - '5672:5672'
@@ -8,13 +9,53 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    networks:
+      - invoice-manager
 
   openzipkin:
+    container_name: 002-zipkin
     image: openzipkin/zipkin:2.24.3
     ports:
       - '9411:9411'
+    networks:
+      - invoice-manager
+
+  db-ms-client:
+    container_name: 003-db-ms-client
+    image: mysql:8.1
+    restart: on-failure
+    ports:
+      - '${DB_MS_CLIENT_PORT}:${DB_MS_CLIENT_PORT}'
+    volumes:
+      - mysql_data_ms_client:/var/lib/mysql
+    environment:
+      MYSQL_TCP_PORT: ${DB_MS_CLIENT_PORT}
+      MYSQL_DATABASE: ${DB_MS_CLIENT_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    networks:
+      - invoice-manager
+
+  db-ms-email:
+    container_name: 004-db-ms-email
+    image: mysql:8.1
+    restart: on-failure
+    ports:
+      - '${DB_MS_EMAIL_PORT}:${DB_MS_EMAIL_PORT}'
+    volumes:
+      - mysql_data_ms_email:/var/lib/mysql
+    environment:
+      MYSQL_TCP_PORT: ${DB_MS_EMAIL_PORT}
+      MYSQL_DATABASE: ${DB_MS_EMAIL_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    networks:
+      - invoice-manager
 
   db-ms-electronic-invoice:
+    container_name: 005-db-ms-electronic-invoice
     image: mysql:8.1
     restart: on-failure
     ports:
@@ -28,11 +69,77 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     networks:
-      - ms-electronic-invoice-network
+      - invoice-manager
+
+  service-registry:
+    container_name: 006-service-registry
+    image: service-registry:0.0.1-SNAPSHOT
+    ports:
+      - '8081:8081'
+    networks:
+      - invoice-manager
+
+  service-gateway:
+    container_name: 007-service-gateway
+    image: service-gateway:0.0.1-SNAPSHOT
+    restart: on-failure
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
+      SPRING_ZIPKIN_BASEURL: http://zipkin:9411
+    env_file:
+      - /service-gateway/.env
+    ports:
+      - '8080:8080'
+    depends_on:
+      - service-registry
+      - db-ms-client
+    networks:
+      - invoice-manager
+
+  ms-client:
+    container_name: 008-ms-client
+    image: ms-client:0.0.1-SNAPSHOT
+    restart: on-failure
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-client:${DB_MS_CLIENT_PORT}/${DB_MS_CLIENT_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
+      SPRING_ZIPKIN_BASEURL: http://zipkin:9411
+      SPRING.RABBITMQ.HOST: rabbitmq
+    env_file:
+      - /ms-client/.env
+    ports:
+      - '8083:8083'
+    depends_on:
+      - service-registry
+      - db-ms-client
+    networks:
+      - invoice-manager
+
+  ms-email:
+    container_name: 009-ms-email
+    image: ms-email:0.0.1-SNAPSHOT
+    restart: on-failure
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-email:${DB_MS_EMAIL_PORT}/${DB_MS_EMAIL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
+      SPRING_ZIPKIN_BASEURL: http://zipkin:9411
+      SPRING.RABBITMQ.HOST: rabbitmq
+    env_file:
+      - /ms-email/.env
+    ports:
+      - '8084:8084'
+    depends_on:
+      - service-registry
+      - db-ms-email
+    networks:
+      - invoice-manager
 
 volumes:
+  mysql_data_ms_client:
+  mysql_data_ms_email:
   mysql_data_ms_electronic_invoice:
 
 networks:
-  ms-electronic-invoice-network:
+  invoice-manager:
     driver: bridge
+
