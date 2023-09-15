@@ -7,11 +7,10 @@ import com.ms.electronic.invoice.domain.entities.Recipient;
 import com.ms.electronic.invoice.infra.errors.BadRequestException;
 import com.ms.electronic.invoice.infra.errors.NotFoundException;
 import com.ms.electronic.invoice.infra.repositories.InvoiceRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 public class InvoiceService {
@@ -28,7 +27,7 @@ public class InvoiceService {
 	@Autowired
 	private CodeService codeService;
 
-	private final Logger logger = Logger.getLogger(InvoiceService.class.getName());
+	private final Logger logger = LoggerFactory.getLogger(InvoiceService.class);
 
 	public Invoice create(
 	  Invoice invoice,
@@ -38,7 +37,7 @@ public class InvoiceService {
 	  Address recipientAddress
 	) {
 		if (invoice == null) {
-			throw new BadRequestException("Invoice data cannot be null");
+			throw new BadRequestException("Invoice data cannot be null.");
 		}
 
 		var issuerEntity = issuerService.create(issuer, issuerAddress);
@@ -55,7 +54,7 @@ public class InvoiceService {
 		issuerService.addInvoice(issuer, invoice);
 		recipientService.addInvoice(recipient, invoice);
 
-		logger.log(Level.INFO, "The invoice has been created.");
+		logger.info("The invoice {} has been created.", entity.getNumber());
 
 		return entity;
 	}
@@ -63,11 +62,11 @@ public class InvoiceService {
 	public Invoice findById(String number) {
 		var entity = repository.findById(number)
 		  .orElseThrow(() -> {
-			  logger.log(Level.WARNING, String.format("Invoice %s not found", number));
+			  logger.info("Invoice {} not found.", number);
 			  return new NotFoundException("Invoice not found.");
 		  });
 
-		logger.log(Level.INFO, String.format("Invoice %s was found", number));
+		logger.info("Invoice {}, was found.", number);
 
 		return entity;
 	}

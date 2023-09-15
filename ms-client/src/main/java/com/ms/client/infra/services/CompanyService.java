@@ -2,21 +2,18 @@ package com.ms.client.infra.services;
 
 import com.ms.client.domain.entities.Address;
 import com.ms.client.domain.entities.Company;
-import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.errors.BadRequestException;
 import com.ms.client.infra.errors.LockedException;
 import com.ms.client.infra.errors.NotFoundException;
 import com.ms.client.infra.mappers.CompanyMapper;
 import com.ms.client.infra.repositories.CompanyRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 public class CompanyService {
@@ -37,11 +34,11 @@ public class CompanyService {
 	private AuthorizationService authorizationService;
 
 	private final CompanyMapper mapper = CompanyMapper.INSTANCE;
-	private final Logger logger = Logger.getLogger(CompanyService.class.getName());
+	private final Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
 	public Company create(Company company, Address address) {
 		if (company == null || address == null) {
-			throw new BadRequestException("Data cannot be null.");
+			throw new BadRequestException("Company data cannot be null.");
 		}
 
 		var companyAddress = addressService.create(address);
@@ -63,14 +60,14 @@ public class CompanyService {
 			manager.getId()
 		);
 
-		logger.log(Level.INFO, "The company has been created.");
+		logger.info("The company {} has been created.", company.getCnpj());
 
 		return entity;
 	}
 
 	public Company update(Company company) {
 		if (company == null) {
-			throw new BadRequestException("Data cannot be null.");
+			throw new BadRequestException("Company data cannot be null.");
 		}
 
 		var entity = findById(company.getId());
@@ -81,14 +78,14 @@ public class CompanyService {
 
 		repository.save(entity);
 
-		logger.log(Level.INFO, "The company has been updated.");
+		logger.info("The company {} has been updated.", company.getCnpj());
 
 		return entity;
 	}
 
 	public Company addAddress(Address address, String companyId) {
 		if (address == null) {
-			throw new BadRequestException("Data cannot be null.");
+			throw new BadRequestException("Address data cannot be null.");
 		}
 
 		var company = findById(companyId);
@@ -99,7 +96,7 @@ public class CompanyService {
 
 		repository.save(company);
 
-		logger.log(Level.INFO, "The address has been added.");
+		logger.info("The address with id: {}, has been added in the company {}.", address.getId(), company.getCnpj());
 
 		return company;
 	}
@@ -122,7 +119,7 @@ public class CompanyService {
 		    manager.getId()
 		);
 
-		logger.log(Level.INFO, "The address has been transferred.");
+		logger.info("The company {}, has been transferred to {}.", company.getCnpj(), manager.getCpf());
 
 		return company;
 	}
@@ -130,18 +127,18 @@ public class CompanyService {
 	public Company findById(String id) {
 		var entity = repository.findById(id)
 		  .orElseThrow(() -> {
-			  logger.log(Level.WARNING, "The company does not exist.");
+			  logger.warn("The company with id: {}, does not exist.", id);
 			  return new NotFoundException("Company");
 		  });
 
-		logger.log(Level.INFO, "The company has been found.");
+		logger.info("The company with id: {}, has been found.", id);
 
 		return entity;
 	}
 
 	public List<Company> findAll() {
 		var manager = authorizationService.getAuthenticatedUser();
-		logger.log(Level.INFO, "All companies has been found.");
+		logger.info("All companies has been found.");
 		return manager.getCompanies();
 	}
 
@@ -159,7 +156,7 @@ public class CompanyService {
 		  entity.getManager().getId()
 		);
 
-		logger.log(Level.INFO, "The company has been deleted.");
+		logger.info("The company id id: {}, has been deleted.", id);
 
 		repository.delete(entity);
 	}
@@ -176,6 +173,8 @@ public class CompanyService {
 		company.getAddress().remove(address);
 		addressService.delete(address.getId());
 		repository.save(company);
+
+		logger.info("The address with id: {} has been deleted of company {}", addressId, companyId);
 
 		return company;
 	}

@@ -5,14 +5,13 @@ import com.ms.client.infra.errors.BadRequestException;
 import com.ms.client.infra.errors.NotFoundException;
 import com.ms.client.infra.mappers.ManagerMapper;
 import com.ms.client.infra.repositories.ManagerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 public class ManagerService {
@@ -33,11 +32,11 @@ public class ManagerService {
 	private NotificationService notificationService;
 
 	private final ManagerMapper mapper = ManagerMapper.INSTANCE;
-	private final Logger logger = Logger.getLogger(ManagerService.class.getName());
+	private final Logger logger = LoggerFactory.getLogger(ManagerService.class);
 
 	public Manager create(Manager manager) {
 		if (manager == null) {
-			throw new BadRequestException("Data cannot be null.");
+			throw new BadRequestException("Manager data cannot be null.");
 		}
 
 		manager.setPassword(
@@ -56,14 +55,14 @@ public class ManagerService {
 		  entity.getId()
 		);
 
-		logger.log(Level.INFO, "A new manager has been saved.");
+		logger.info("The manager with id: {}, has been saved.", entity.getId());
 
 		return entity;
 	}
 
 	public Manager update(Manager manager) {
 		if (manager == null) {
-			throw new BadRequestException("Data cannot be null.");
+			throw new BadRequestException("Manager data cannot be null.");
 		}
 
 		var entity = findById(manager.getId());
@@ -74,7 +73,7 @@ public class ManagerService {
 
 		repository.save(entity);
 
-		logger.log(Level.INFO, "A manager has been updated.");
+		logger.info("The manager with id: {}, has been updated.", entity.getId());
 
 		return entity;
 	}
@@ -82,11 +81,11 @@ public class ManagerService {
 	public Manager findById(String id) {
 		var entity = repository.findById(id)
 		  .orElseThrow(() -> {
-			  logger.log(Level.WARNING, "The manager does not exist.");
+			  logger.warn("The manager with id: {}, does not exist.", id);
 			  return new NotFoundException("Manager");
 		  });
 
-		logger.log(Level.INFO, "The manager has been found.");
+		logger.info("The manager with id: {}, has been found.", id);
 
 		return entity;
 	}
@@ -103,7 +102,7 @@ public class ManagerService {
 		  entity.getId()
 		);
 
-		logger.log(Level.INFO, "A manager has been disabled.");
+		logger.info("The manager with id: {}, has been disabled.", id);
 
 		return repository.save(entity);
 	}

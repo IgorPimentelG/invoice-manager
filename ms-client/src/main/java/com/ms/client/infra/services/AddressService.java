@@ -5,11 +5,10 @@ import com.ms.client.infra.errors.BadRequestException;
 import com.ms.client.infra.errors.NotFoundException;
 import com.ms.client.infra.mappers.AddressMapper;
 import com.ms.client.infra.repositories.AddressRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 public class AddressService {
@@ -18,23 +17,23 @@ public class AddressService {
 	private AddressRepository repository;
 
 	private final AddressMapper mapper = AddressMapper.INSTANCE;
-	private final Logger logger = Logger.getLogger(AddressService.class.getName());
+	private final Logger logger = LoggerFactory.getLogger(AddressService.class);
 
 	public Address create(Address address) {
 		if (address == null) {
-			throw new BadRequestException("Data cannot be null.");
+			throw new BadRequestException("Address data cannot be null.");
 		}
 
 		var entity = repository.save(address);
 
-		logger.log(Level.INFO, "A new address has been saved.");
+		logger.info("A new address with id: {}, has been saved.", entity.getId());
 
 		return entity;
 	}
 
 	public Address update(Address address) {
 		if (address == null) {
-			throw new BadRequestException("Data cannot be null.");
+			throw new BadRequestException("Address data cannot be null.");
 		}
 
 		var entity = findById(address.getId());
@@ -42,7 +41,7 @@ public class AddressService {
 		mapper.map(address, entity);
 		repository.save(entity);
 
-		logger.log(Level.INFO, "An address has been updated.");
+		logger.info("The address with id: {}, has been updated.", entity.getId());
 
 		return entity;
 	}
@@ -50,11 +49,11 @@ public class AddressService {
 	public Address findById(long id) {
 		 var entity = repository.findById(id)
 		  .orElseThrow(() -> {
-			  logger.log(Level.WARNING, "The address does not exist.");
+			  logger.warn("The address with id: {}, does not exist.", id);
 			  return new NotFoundException("Address");
 		  });
 
-		 logger.log(Level.INFO, "The address has been found.");
+		 logger.info("The address with id: {}, has been found.", id);
 
 		 return entity;
 	}
@@ -63,6 +62,6 @@ public class AddressService {
 		var entity = findById(id);
 		repository.delete(entity);
 
-		logger.log(Level.INFO, "An address has been deleted.");
+		logger.info("The address with id: {}, has been deleted.", id);
 	}
 }

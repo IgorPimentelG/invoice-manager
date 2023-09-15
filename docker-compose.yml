@@ -9,6 +9,11 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
 
+  openzipkin:
+    image: openzipkin/zipkin:2.24.3
+    ports:
+      - '9411:9411'
+
   db-ms-electronic-invoice:
     image: mysql:8.1
     restart: on-failure

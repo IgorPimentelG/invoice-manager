@@ -6,6 +6,11 @@ spring:
     profiles:
       active: dev
 
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
 eureka:
   client:
     serviceUrl:

@@ -4,15 +4,14 @@ import com.ms.email.domain.entities.Email;
 import com.ms.email.infra.errors.NotFoundException;
 import com.ms.email.domain.types.Status;
 import com.ms.email.infra.repositories.EmailRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 public class EmailService {
@@ -23,7 +22,7 @@ public class EmailService {
 	@Autowired
 	private JavaMailSender emailSender;
 
-	private final Logger logger = Logger.getLogger(EmailService.class.getName());
+	private final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
 	public Email send(Email email) {
 		try {
@@ -37,11 +36,10 @@ public class EmailService {
 
 			email.setStatus(Status.SENT);
 
-			logger.log(Level.INFO, "The email sent successfully");
+			logger.info("The email sent successfully");
 		} catch (Exception e) {
 			email.setStatus(Status.ERROR);
-
-			logger.log(Level.WARNING, "The email failed to be sent");
+			logger.error("The email failed to be sent");
 		}
 
 		return repository.save(email);
@@ -50,18 +48,18 @@ public class EmailService {
 	public Email findById(String id) {
 		var entity =  repository.findById(id).orElseThrow(
 		  () -> {
-			  logger.log(Level.WARNING, "Email record not found.");
+			  logger.warn("Email record with id: {}, not found.", id);
 			  return new NotFoundException("The register of email was not found.");
 		  }
 		);
 
-		logger.log(Level.INFO, "The email record was found.");
+		logger.info("The email record with id: {}, was found.", id);
 
 		return entity;
 	}
 
 	public Page<Email> findAll(Pageable pageable) {
-		logger.log(Level.INFO, "List all email records.");
+		logger.info("List all email records.");
 		return repository.findAll(pageable);
 	}
 }

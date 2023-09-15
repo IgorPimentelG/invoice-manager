@@ -2,17 +2,16 @@ package com.ms.electronic.invoice.infra.services;
 
 import com.ms.electronic.invoice.domain.entities.Address;
 import com.ms.electronic.invoice.domain.entities.Invoice;
-import com.ms.electronic.invoice.domain.entities.Issuer;
 import com.ms.electronic.invoice.domain.entities.Recipient;
 import com.ms.electronic.invoice.infra.errors.BadRequestException;
 import com.ms.electronic.invoice.infra.errors.NotFoundException;
 import com.ms.electronic.invoice.infra.repositories.RecipientRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 public class RecipientService {
@@ -23,11 +22,11 @@ public class RecipientService {
 	@Autowired
 	private AddressService addressService;
 
-	private final Logger logger = Logger.getLogger(RecipientService.class.getName());
+	private final Logger logger = LoggerFactory.getLogger(RecipientService.class);
 
 	public Recipient create(Recipient recipient, Address address) {
 		if (recipient == null) {
-			throw new BadRequestException("Recipient cannot be null.");
+			throw new BadRequestException("Recipient data cannot be null.");
 		}
 
 		var entity = repository.findById(recipient.getCnpj());
@@ -37,20 +36,19 @@ public class RecipientService {
 			recipient.setAddress(entityAddress);
 			entity = Optional.of(repository.save(recipient));
 
-			logger.log(Level.INFO, "Recipient has been created.");
+			logger.info("Recipient {} has been created.", entity.get().getCnpj());
 		}
-
 		return entity.get();
 	}
 
 	public Recipient findById(String cnpj) {
 		var entity = repository.findById(cnpj)
 		  .orElseThrow(() -> {
-			  logger.log(Level.WARNING, String.format("Recipient %s not found", cnpj));
+			  logger.info("Recipient {} not found", cnpj);
 			  return new NotFoundException("Recipient not found.");
 		  });
 
-		logger.log(Level.INFO, String.format("Recipient %s was found.", cnpj));
+		logger.info("Recipient {} was found.", cnpj);
 
 		return entity;
 	}
