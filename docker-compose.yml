@@ -17,6 +17,10 @@ services:
     image: openzipkin/zipkin:2.24.3
     ports:
       - '9411:9411'
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBIT_URI: amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672
     networks:
       - invoice-manager
 
@@ -86,6 +90,8 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+      SPRING_RABBITMQ_HOST: rabbitmq
     env_file:
       - /service-gateway/.env
     ports:
@@ -93,6 +99,7 @@ services:
     depends_on:
       - service-registry
       - db-ms-client
+      - rabbitmq
     networks:
       - invoice-manager
 
@@ -104,7 +111,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-client:${DB_MS_CLIENT_PORT}/${DB_MS_CLIENT_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411
-      SPRING.RABBITMQ.HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+      SPRING_RABBITMQ_HOST: rabbitmq
     env_file:
       - /ms-client/.env
     ports:
@@ -112,6 +120,7 @@ services:
     depends_on:
       - service-registry
       - db-ms-client
+      - rabbitmq
     networks:
       - invoice-manager
 
@@ -123,7 +132,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-email:${DB_MS_EMAIL_PORT}/${DB_MS_EMAIL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411
-      SPRING.RABBITMQ.HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+      SPRING_RABBITMQ_HOST: rabbitmq
     env_file:
       - /ms-email/.env
     ports:
@@ -131,6 +141,7 @@ services:
     depends_on:
       - service-registry
       - db-ms-email
+      - rabbitmq
     networks:
       - invoice-manager
 
