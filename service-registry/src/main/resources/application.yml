@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: service-registry
+  config:
+    import: optional:file:service-registry/.env[.properties]
 
 management:
   tracing:
@@ -19,3 +21,8 @@ eureka:
     fetchRegistry: false
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+security:
+  credentials:
+    username: ${SERVER_USERNAME}
+    password: ${SERVER_PASSWORD}
