@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.1.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <groupId>com.invoice.manager</groupId>
@@ -19,6 +19,7 @@
         <module>ms-client</module>
         <module>ms-electronic-invoice</module>
         <module>ms-tax-calculator</module>
+        <module>service-auth</module>
         <module>service-registry</module>
         <module>service-gateway</module>
     </modules>

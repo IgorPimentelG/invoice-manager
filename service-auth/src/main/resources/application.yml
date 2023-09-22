@@ -1,0 +1,18 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: service-auth
+  config:
+    import: optional:file:service-auth/.env[.properties]
+
+security:
+  jwt:
+    token:
+      secret-key: ${JWT_SECRET_KEY}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${SERVICE_REGISTRY_URL}
