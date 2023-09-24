@@ -78,6 +78,8 @@ services:
   service-registry:
     container_name: 006-service-registry
     image: service-registry:0.0.1-SNAPSHOT
+    env_file:
+      - /service-registry/.env
     ports:
       - '8081:8081'
     networks:

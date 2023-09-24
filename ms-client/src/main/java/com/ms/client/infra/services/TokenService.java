@@ -19,7 +19,7 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-	@Value("${security.jwt.token.secret-key")
+	@Value("${security.jwt.token.secret-key}")
 	private String secretKey;
 
 	@Value("${security.jwt.token.expire-length}")
