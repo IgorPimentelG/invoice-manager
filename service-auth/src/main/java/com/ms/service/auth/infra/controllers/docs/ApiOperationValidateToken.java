@@ -1,6 +1,6 @@
 package com.ms.service.auth.infra.controllers.docs;
 
-import com.ms.service.auth.infra.dtos.TokenDto;
+import com.ms.service.auth.domain.entities.User;
 import com.ms.service.auth.infra.error.InvalidTokenException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @Operation(summary = "Validate token", description = "Allow validate a JWT token", tags = {"Auth"})
 @ApiResponses({
   @ApiResponse(responseCode = "200", description = "The token was validated", content = @Content(
-	schema = @Schema(implementation = TokenDto.class)
+	schema = @Schema(implementation = User.class)
   )),
   @ApiResponse(responseCode = "403", description = "The token is invalid", content = @Content(
 	schema = @Schema(implementation = InvalidTokenException.class)

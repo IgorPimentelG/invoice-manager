@@ -6,6 +6,15 @@ spring:
     name: service-auth
   config:
     import: optional:file:service-auth/.env[.properties]
+  profiles:
+    active: true
+  datasource:
+    url: jdbc:mysql://localhost:${DB_PORT}/${DB_DATABASE}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
 
 security:
   credentials:

@@ -1,7 +1,7 @@
 package com.ms.service.auth.infra.controllers;
 
+import com.ms.service.auth.domain.entities.User;
 import com.ms.service.auth.infra.controllers.docs.ApiOperationValidateToken;
-import com.ms.service.auth.infra.dtos.TokenDto;
 import com.ms.service.auth.infra.services.TokenService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class AuthController {
 
 	@GetMapping("/token/validate")
 	@ApiOperationValidateToken
-	public ResponseEntity<TokenDto> validateToken(@RequestParam("accessToken") String accessToken) {
+	public ResponseEntity<User> validateToken(@RequestParam("accessToken") String accessToken) {
 		var result = service.validateToken(accessToken);
 		return ResponseEntity.ok(result);
 	}
