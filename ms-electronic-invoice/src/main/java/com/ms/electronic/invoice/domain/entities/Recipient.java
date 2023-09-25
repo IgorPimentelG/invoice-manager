@@ -4,13 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ms.electronic.invoice.domain.validation.CompanyValidator;
 import jakarta.persistence.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "recipients")
-public class Recipient {
+public class Recipient implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	private String cnpj;
@@ -23,11 +28,8 @@ public class Recipient {
 
 	private String phone;
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "recipient_address",
-		joinColumns = {@JoinColumn(name = "recipient_id")},
-	    inverseJoinColumns = {@JoinColumn(name = "address_id")}
-	)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "address_id")
 	private Address address;
 
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

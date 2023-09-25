@@ -1,4 +1,4 @@
-package com.ms.electronic.invoice.main.middlewares.error;
+package com.ms.electronic.invoice.main.properties;
 
 import java.time.LocalDateTime;
 

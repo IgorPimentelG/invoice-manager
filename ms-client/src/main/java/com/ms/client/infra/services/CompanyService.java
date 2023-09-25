@@ -124,6 +124,18 @@ public class CompanyService {
 		return company;
 	}
 
+	public Company findByCnpj(String cnpj) {
+		var entity = repository.findByCnpj(cnpj)
+		  .orElseThrow(() -> {
+			  logger.warn("The company with CNPJ: {}, does not exist.", cnpj);
+			  return new NotFoundException("Company");
+		  });
+
+		logger.info("The company with CNPJ: {}, has been found.", cnpj);
+
+		return entity;
+	}
+
 	public Company findById(String id) {
 		var entity = repository.findById(id)
 		  .orElseThrow(() -> {
