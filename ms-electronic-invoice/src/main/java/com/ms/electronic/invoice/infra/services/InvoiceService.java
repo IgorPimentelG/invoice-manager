@@ -5,12 +5,14 @@ import com.ms.electronic.invoice.domain.entities.Issuer;
 import com.ms.electronic.invoice.infra.errors.BadRequestException;
 import com.ms.electronic.invoice.infra.errors.NotFoundException;
 import com.ms.electronic.invoice.infra.proxies.CompanyProxy;
+import com.ms.electronic.invoice.infra.proxies.responses.Company;
 import com.ms.electronic.invoice.infra.repositories.InvoiceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,6 +26,9 @@ public class InvoiceService {
 
 	@Autowired
 	private RecipientService recipientService;
+
+	@Autowired
+	private NotificationService notificationService;
 
 	@Autowired
 	private CodeService codeService;
@@ -60,6 +65,7 @@ public class InvoiceService {
 
 			var entity = repository.save(invoice);
 
+			notify(company, invoiceNumber);
 			logger.info("The invoice {} has been created.", invoiceNumber);
 
 			return entity;
@@ -94,5 +100,21 @@ public class InvoiceService {
 		logger.info("Invoice {}, was canceled.", number);
 
 		repository.save(entity);
+	}
+
+	private void notify(Company company, String invoiceNumber) {
+		var content = new StringBuilder();
+		content.append("An invoice was issued at ");
+		content.append(LocalDateTime.now());
+		content.append(" . Invoice number: ");
+		content.append(invoiceNumber);
+		content.append(". Validation code: ");
+		content.append(codeService.encryptCode(invoiceNumber));
+
+		notificationService.sendNotification(
+		  company.email(),
+		  content.toString(),
+		  company.id()
+		);
 	}
 }

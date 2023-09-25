@@ -27,6 +27,9 @@ security:
     username: ${SERVICE_AUTH_USERNAME}
     password: ${SERVICE_AUTH_PASSWORD}
 
+queues:
+  notification: ms-email.v1.send-email
+
 eureka:
   client:
     serviceUrl:

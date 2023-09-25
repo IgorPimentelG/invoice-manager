@@ -7,9 +7,7 @@ import com.ms.electronic.invoice.infra.controllers.docs.ApiOperationList;
 import com.ms.electronic.invoice.infra.controllers.docs.ApiOperationRegister;
 import com.ms.electronic.invoice.infra.dtos.CreateInvoiceDto;
 import com.ms.electronic.invoice.infra.helpers.FormatCNPJ;
-import com.ms.electronic.invoice.infra.mappers.AddressMapper;
 import com.ms.electronic.invoice.infra.mappers.InvoiceMapper;
-import com.ms.electronic.invoice.infra.mappers.RecipientMapper;
 import com.ms.electronic.invoice.infra.services.InvoiceService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,9 +31,7 @@ public class InvoiceController {
 	@Autowired
 	private InvoiceService service;
 
-	private final AddressMapper addressMapper = AddressMapper.INSTANCE;
 	private final InvoiceMapper invoiceMapper = InvoiceMapper.INSTANCE;
-	private final RecipientMapper recipientMapper = RecipientMapper.INSTANCE;
 
 	@ApiOperationRegister
 	@PostMapping("/v1/register")
@@ -52,9 +48,9 @@ public class InvoiceController {
 		  request.getHeader("Authorization")
 		);
 
-//		result.add(
-//		  linkTo(methodOn(InvoiceController.class).find(result.getNumber())).withSelfRel()
-//		);
+		result.add(
+		  linkTo(methodOn(InvoiceController.class).find(result.getNumber())).withSelfRel()
+		);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(result);
 	}

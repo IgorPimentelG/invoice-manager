@@ -1,4 +1,4 @@
-package com.ms.client.infra.dtos;
+package com.ms.electronic.invoice.infra.dtos;
 
 public record EmailRequestDto(
   String to,
