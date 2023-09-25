@@ -1,16 +1,17 @@
 package com.ms.electronic.invoice.infra.services;
 
-import com.ms.electronic.invoice.domain.entities.Address;
 import com.ms.electronic.invoice.domain.entities.Invoice;
 import com.ms.electronic.invoice.domain.entities.Issuer;
-import com.ms.electronic.invoice.domain.entities.Recipient;
 import com.ms.electronic.invoice.infra.errors.BadRequestException;
 import com.ms.electronic.invoice.infra.errors.NotFoundException;
+import com.ms.electronic.invoice.infra.proxies.CompanyProxy;
 import com.ms.electronic.invoice.infra.repositories.InvoiceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class InvoiceService {
@@ -27,36 +28,45 @@ public class InvoiceService {
 	@Autowired
 	private CodeService codeService;
 
+	@Autowired
+	private CompanyProxy companyProxy;
+
 	private final Logger logger = LoggerFactory.getLogger(InvoiceService.class);
 
 	public Invoice create(
+	  String issuerCnpj,
 	  Invoice invoice,
-	  Issuer issuer,
-	  Recipient recipient,
-	  Address issuerAddress,
-	  Address recipientAddress
+	  String credentials
 	) {
 		if (invoice == null) {
 			throw new BadRequestException("Invoice data cannot be null.");
 		}
 
-		var issuerEntity = issuerService.create(issuer, issuerAddress);
-		var recipientEntity = recipientService.create(recipient, recipientAddress);
-		var invoiceNumber = codeService.generateCode();
-		var invoiceValidationCode = codeService.encryptCode(invoiceNumber);
+		try {
+			var company = companyProxy.getCompany(issuerCnpj, credentials);
+			var issuer = new Issuer(
+			  company.cnpj(),
+			  company.corporateName(),
+			  company.address().get(0)
+			);
 
-		invoice.setIssuer(issuerEntity);
-		invoice.setRecipient(recipientEntity);
-		invoice.setNumber(invoiceNumber);
-		invoice.setValidationCode(invoiceValidationCode);
+			issuerService.create(issuer);
+			recipientService.create(invoice.getRecipient());
 
-		var entity = repository.save(invoice);
-		issuerService.addInvoice(issuer, invoice);
-		recipientService.addInvoice(recipient, invoice);
+			var invoiceNumber = codeService.generateCode();
+			invoice.setNumber(invoiceNumber);
+			invoice.setValidationCode(codeService.encryptCode(invoiceNumber));
+			invoice.setIssuer(issuer);
 
-		logger.info("The invoice {} has been created.", entity.getNumber());
+			var entity = repository.save(invoice);
 
-		return entity;
+			logger.info("The invoice {} has been created.", invoiceNumber);
+
+			return entity;
+		} catch (Exception e) {
+			logger.error("Not possible create invoice.");
+			throw new BadRequestException(e.getMessage());
+		}
 	}
 
 	public Invoice findById(String number) {
@@ -71,7 +81,18 @@ public class InvoiceService {
 		return entity;
 	}
 
-	public Invoice findByCNPJ(String cnpj) {
-		return null;
+	public List<Invoice> findByCNPJ(String cnpj) {
+		var entities = repository.findAllByCnpj(cnpj);
+		logger.info("Find all Invoices of company {}.", cnpj);
+		return entities;
+	}
+
+	public void cancel(String number) {
+		var entity = findById(number);
+		entity.setCanceled(true);
+
+		logger.info("Invoice {}, was canceled.", number);
+
+		repository.save(entity);
 	}
 }

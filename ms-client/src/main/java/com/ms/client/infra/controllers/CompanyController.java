@@ -5,6 +5,7 @@ import com.ms.client.infra.controllers.docs.company.*;
 import com.ms.client.infra.dtos.CreateAddressDto;
 import com.ms.client.infra.dtos.CreateCompanyDto;
 import com.ms.client.infra.dtos.UpdateCompanyDto;
+import com.ms.client.infra.helpers.FormatCNPJ;
 import com.ms.client.infra.mappers.AddressMapper;
 import com.ms.client.infra.mappers.CompanyMapper;
 import com.ms.client.infra.services.CompanyService;
@@ -96,9 +97,9 @@ public class CompanyController {
 	}
 
 	@ApiOperationFind
-	@GetMapping("/v1/find/{id}")
-	public ResponseEntity<Company> find(@PathVariable("id") String id) {
-		var result = service.findById(id);
+	@GetMapping("/v1/find/{cnpj}")
+	public ResponseEntity<Company> find(@PathVariable("cnpj") String cnpj) {
+		var result = service.findByCnpj(FormatCNPJ.format(cnpj));
 
 		result.add(
 		  linkTo(methodOn(CompanyController.class).listAll()).withSelfRel()

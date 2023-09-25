@@ -1,6 +1,5 @@
 package com.ms.electronic.invoice.infra.services;
 
-import com.ms.electronic.invoice.domain.entities.Address;
 import com.ms.electronic.invoice.domain.entities.Invoice;
 import com.ms.electronic.invoice.domain.entities.Issuer;
 import com.ms.electronic.invoice.infra.errors.BadRequestException;
@@ -24,7 +23,7 @@ public class IssuerService {
 
 	private final Logger logger = LoggerFactory.getLogger(IssuerService.class);
 
-	public Issuer create(Issuer issuer, Address address) {
+	public Issuer create(Issuer issuer) {
 		if (issuer == null) {
 			throw new BadRequestException("Issuer data cannot be null.");
 		}
@@ -32,7 +31,7 @@ public class IssuerService {
 		var entity = repository.findById(issuer.getCnpj());
 
 		if (entity.isEmpty()) {
-			var entityAddress = addressService.create(address);
+			var entityAddress = addressService.create(issuer.getAddress());
 			issuer.setAddress(entityAddress);
 			entity = Optional.of(repository.save(issuer));
 

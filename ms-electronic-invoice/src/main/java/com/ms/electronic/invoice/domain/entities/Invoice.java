@@ -2,14 +2,20 @@ package com.ms.electronic.invoice.domain.entities;
 
 import com.ms.electronic.invoice.domain.validation.InvoiceValidator;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "invoices")
-public class Invoice {
+public class Invoice extends RepresentationModel<Invoice> implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	private String number;
@@ -36,13 +42,12 @@ public class Invoice {
 	private Issuer issuer;
 
 	public Invoice() {
-		this.isCanceled = false;
+		init();
 	}
 
 	public Invoice(
 	  String number,
 	  String validationCode,
-	  LocalDateTime dateIssue,
 	  String description,
 	  BigDecimal value,
 	  Recipient recipient,
@@ -50,13 +55,17 @@ public class Invoice {
 	) {
 		this.number = number;
 		this.validationCode = validationCode;
-		this.dateIssue = dateIssue;
 		this.description = description;
 		this.amount = value;
 		this.recipient = recipient;
 		this.issuer = issuer;
 
+		init();
+	}
+
+	public void init() {
 		this.isCanceled = false;
+		this.dateIssue = LocalDateTime.now();
 	}
 
 	public String getNumber() {

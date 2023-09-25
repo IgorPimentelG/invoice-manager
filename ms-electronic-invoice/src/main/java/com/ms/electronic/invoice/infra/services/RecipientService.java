@@ -1,6 +1,5 @@
 package com.ms.electronic.invoice.infra.services;
 
-import com.ms.electronic.invoice.domain.entities.Address;
 import com.ms.electronic.invoice.domain.entities.Invoice;
 import com.ms.electronic.invoice.domain.entities.Recipient;
 import com.ms.electronic.invoice.infra.errors.BadRequestException;
@@ -24,7 +23,7 @@ public class RecipientService {
 
 	private final Logger logger = LoggerFactory.getLogger(RecipientService.class);
 
-	public Recipient create(Recipient recipient, Address address) {
+	public Recipient create(Recipient recipient) {
 		if (recipient == null) {
 			throw new BadRequestException("Recipient data cannot be null.");
 		}
@@ -32,7 +31,7 @@ public class RecipientService {
 		var entity = repository.findById(recipient.getCnpj());
 
 		if (entity.isEmpty()) {
-			var entityAddress = addressService.create(address);
+			var entityAddress = addressService.create(recipient.getAddress());
 			recipient.setAddress(entityAddress);
 			entity = Optional.of(repository.save(recipient));
 

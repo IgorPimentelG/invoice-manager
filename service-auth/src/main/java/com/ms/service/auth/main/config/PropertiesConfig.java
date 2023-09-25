@@ -1,0 +1,16 @@
+package com.ms.service.auth.main.config;
+
+import com.ms.service.auth.main.properties.DefaultUser;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class PropertiesConfig {
+
+	@Bean
+	@ConfigurationProperties("security.credentials")
+	public DefaultUser defaultUser() {
+		return new DefaultUser();
+	}
+}

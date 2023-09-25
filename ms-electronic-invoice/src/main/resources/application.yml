@@ -1,3 +1,6 @@
+server:
+  port: 8085
+
 spring:
   application:
     name: ms-electronic-invoice
@@ -20,6 +23,9 @@ management:
 
 security:
   secret-key: ${CODE_SECRET_KEY}
+  service-auth:
+    username: ${SERVICE_AUTH_USERNAME}
+    password: ${SERVICE_AUTH_PASSWORD}
 
 eureka:
   client:

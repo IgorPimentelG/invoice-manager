@@ -1,0 +1,31 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: service-auth
+  config:
+    import: optional:file:service-auth/.env[.properties]
+  profiles:
+    active: true
+  datasource:
+    url: jdbc:mysql://localhost:${DB_PORT}/${DB_DATABASE}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+security:
+  credentials:
+    username: ${SERVER_USERNAME}
+    password: ${SERVER_PASSWORD}
+  jwt:
+    token:
+      secret-key: ${JWT_SECRET_KEY}
+      issuer: ${JWT_ISSUER}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${SERVICE_REGISTRY_URL}
