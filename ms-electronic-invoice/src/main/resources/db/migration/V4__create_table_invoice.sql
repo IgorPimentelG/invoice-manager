@@ -10,5 +10,5 @@ CREATE TABLE IF NOT EXISTS invoices (
     issuer_id CHAR(18) NOT NULL,
 
     CONSTRAINT fk_recipient FOREIGN KEY (recipient_id) REFERENCES recipients (cnpj),
-    CONSTRAINT fk_issuer FOREIGN KEY (issuer_id) REFERENCES recipients (cnpj)
+    CONSTRAINT fk_issuer FOREIGN KEY (issuer_id) REFERENCES issuers (cnpj)
 );
