@@ -1,6 +1,8 @@
-package com.ms.email.main.middlewares.error;
+package com.ms.email.main.config;
 
 import com.ms.email.infra.errors.NotFoundException;
+import com.ms.email.infra.errors.UnauthorizedException;
+import com.ms.email.main.properties.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 @RestController
-public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
+public class ResponseExceptionConfig extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<ExceptionResponse> handleDefaultException(Exception ex, WebRequest request) {
@@ -27,6 +29,14 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	public final ResponseEntity<ExceptionResponse> handleNotFoundException(Exception ex, WebRequest request) {
 		return new ResponseEntity<>(
 		  responseFactory(ex, 404),
+		  HttpStatus.NOT_FOUND
+		);
+	}
+
+	@ExceptionHandler(UnauthorizedException.class)
+	public final ResponseEntity<ExceptionResponse> handleUnauthorizedException(Exception ex, WebRequest request) {
+		return new ResponseEntity<>(
+		  responseFactory(ex, 403),
 		  HttpStatus.NOT_FOUND
 		);
 	}

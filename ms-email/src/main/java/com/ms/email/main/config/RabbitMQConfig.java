@@ -1,4 +1,4 @@
-package com.ms.email.main.configs;
+package com.ms.email.main.config;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

@@ -1,4 +1,4 @@
-package com.ms.email.main.middlewares.error;
+package com.ms.email.main.properties;
 
 import java.time.LocalDateTime;
 
