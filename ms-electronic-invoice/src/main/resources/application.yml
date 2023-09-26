@@ -4,6 +4,7 @@ server:
 spring:
   application:
     name: ms-electronic-invoice
+    allow-bean-definition-overriding: true
   config:
     import: optional:file:ms-electronic-invoice/.env[.properties]
   profiles:
@@ -15,6 +16,27 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+  rabbitmq:
+    host: ${AMQP_HOST}
+    port: ${AMQP_PORT}
+    username: ${AMQP_USERNAME}
+    password: ${AMQP_PASSWORD}
+  cache:
+    type: jcache
+    jcache:
+      provider: com.hazelcast.cache.impl.HazelcastServerCachingProvider
+      config: classpath:hazelcast.xml
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: MSElectronicInvoiceRateLimit
+      url: .*
+      rate-limits:
+        - bandwidths:
+            - capacity: 5
+              time: 60
+              unit: seconds
 
 management:
   tracing:
@@ -37,3 +59,10 @@ eureka:
 
 springdoc:
   show-actuator: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      cb_ms-client:
+        minimumNumberOfCalls: 4
+        SlidingWindowSize: 8

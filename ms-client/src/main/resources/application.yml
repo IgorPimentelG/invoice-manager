@@ -4,6 +4,7 @@ server:
 spring:
   application:
     name: ms-client
+    allow-bean-definition-overriding: true
   config:
     import: optional:file:ms-client/.env[.properties]
     uri: http://localhost:8888
@@ -21,6 +22,22 @@ spring:
     port: ${AMQP_PORT}
     username: ${AMQP_USERNAME}
     password: ${AMQP_PASSWORD}
+  cache:
+    type: jcache
+    jcache:
+      provider: com.hazelcast.cache.impl.HazelcastServerCachingProvider
+      config: classpath:hazelcast.xml
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: MSClientRateLimit
+      url: .*
+      rate-limits:
+        - bandwidths:
+            - capacity: 5
+              time: 60
+              unit: seconds
 
 management:
   tracing:

@@ -7,6 +7,7 @@ import com.ms.electronic.invoice.infra.errors.NotFoundException;
 import com.ms.electronic.invoice.infra.proxies.CompanyProxy;
 import com.ms.electronic.invoice.infra.proxies.responses.Company;
 import com.ms.electronic.invoice.infra.repositories.InvoiceRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ public class InvoiceService {
 
 	private final Logger logger = LoggerFactory.getLogger(InvoiceService.class);
 
+	@CircuitBreaker(name = "cb_ms-client")
 	public Invoice create(
 	  String issuerCnpj,
 	  Invoice invoice,
@@ -106,7 +108,7 @@ public class InvoiceService {
 		var content = new StringBuilder();
 		content.append("An invoice was issued at ");
 		content.append(LocalDateTime.now());
-		content.append(" . Invoice number: ");
+		content.append(". Invoice number: ");
 		content.append(invoiceNumber);
 		content.append(". Validation code: ");
 		content.append(codeService.encryptCode(invoiceNumber));
