@@ -1,4 +1,4 @@
-package com.ms.tax.calculator.main.configs;
+package com.ms.tax.calculator.main.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -8,7 +8,7 @@ import io.swagger.v3.oas.models.info.License;
 import org.springframework.context.annotation.Bean;
 
 @OpenAPIDefinition(info = @Info(title = "MS Tax Calculator", version = "0.0.1"))
-public class OpenApiConfiguration {
+public class OpenApiConfig {
 
 	@Bean
 	public OpenAPI customOpenAPI() {

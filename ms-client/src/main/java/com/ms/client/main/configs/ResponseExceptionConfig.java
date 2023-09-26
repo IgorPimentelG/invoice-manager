@@ -1,9 +1,10 @@
-package com.ms.client.main.middlewares.error;
+package com.ms.client.main.configs;
 
 import com.ms.client.infra.errors.BadRequestException;
 import com.ms.client.infra.errors.LockedException;
 import com.ms.client.infra.errors.NotFoundException;
 import com.ms.client.infra.errors.UnauthorizedException;
+import com.ms.client.main.properties.ExceptionResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestControllerAdvice
-public class ResponseExceptionHandle extends ResponseEntityExceptionHandler {
+public class ResponseExceptionConfig extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<ExceptionResponse> handleDefaultException(Exception ex) {

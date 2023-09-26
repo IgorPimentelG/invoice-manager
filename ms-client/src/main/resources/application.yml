@@ -49,6 +49,7 @@ security:
     token:
       secret-key: ${JWT_SECRET_KEY}
       expire-length: 3600000
+      issuer-url: http://host.docker.internal:8083
 
 eureka:
   client:

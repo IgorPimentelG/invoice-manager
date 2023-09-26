@@ -86,12 +86,28 @@ services:
     networks:
       - invoice-manager
 
+  service-auth:
+    container_name: 007-service-auth
+    image: service-auth:0.0.1-SNAPSHOT
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-client:${DB_MS_CLIENT_PORT}/${DB_MS_CLIENT_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:  http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
+    env_file:
+      - /service-auth/.env
+    ports:
+      - '9000:9000'
+    networks:
+      - invoice-manager
+    depends_on:
+      - service-registry
+      - db-ms-client
+
   service-gateway:
-    container_name: 007-service-gateway
+    container_name: 008-service-gateway
     image: service-gateway:0.0.1-SNAPSHOT
     restart: on-failure
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411
       SPRING_ZIPKIN_SENDER_TYPE: rabbit
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -101,18 +117,21 @@ services:
       - '8080:8080'
     depends_on:
       - service-registry
+      - service-auth
+      - ms-client
+      - ms-email
       - db-ms-client
       - rabbitmq
     networks:
       - invoice-manager
 
   ms-client:
-    container_name: 008-ms-client
+    container_name: 009-ms-client
     image: ms-client:0.0.1-SNAPSHOT
     restart: on-failure
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-client:${DB_MS_CLIENT_PORT}/${DB_MS_CLIENT_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411
       SPRING_ZIPKIN_SENDER_TYPE: rabbit
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -128,12 +147,12 @@ services:
       - invoice-manager
 
   ms-email:
-    container_name: 009-ms-email
+    container_name: 010-ms-email
     image: ms-email:0.0.1-SNAPSHOT
     restart: on-failure
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-email:${DB_MS_EMAIL_PORT}/${DB_MS_EMAIL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:  http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411
       SPRING_ZIPKIN_SENDER_TYPE: rabbit
       SPRING_RABBITMQ_HOST: rabbitmq

@@ -1,4 +1,4 @@
-package com.ms.client.main.middlewares.security;
+package com.ms.client.main.configs;
 
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.errors.NotFoundException;
@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-public class SecurityFilter extends OncePerRequestFilter {
+public class SecurityFilterConfig extends OncePerRequestFilter {
 
 	@Autowired
 	private TokenService service;
@@ -48,6 +48,6 @@ public class SecurityFilter extends OncePerRequestFilter {
 
 	private String getToken(HttpServletRequest request) {
 		var authHeader = request.getHeader("Authorization");
-		return authHeader == null ? null : authHeader.replace("Bearer ", "");
+		return authHeader == null ? null : authHeader.replace("Bearer ", "").trim();
 	}
 }
