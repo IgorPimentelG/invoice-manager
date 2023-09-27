@@ -17,5 +17,6 @@ public interface InvoiceMapper {
 	@Mapping(target = "dateIssue", ignore = true)
 	@Mapping(target = "canceled", ignore = true)
 	@Mapping(target = "issuer", ignore = true)
+	@Mapping(target = "reference", source = "reference")
 	Invoice createEntity(CreateInvoiceDto source);
 }

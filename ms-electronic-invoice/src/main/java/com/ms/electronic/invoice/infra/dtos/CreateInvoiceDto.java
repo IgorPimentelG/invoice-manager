@@ -2,6 +2,7 @@ package com.ms.electronic.invoice.infra.dtos;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import org.hibernate.validator.constraints.Length;
 
@@ -15,6 +16,20 @@ public record CreateInvoiceDto(
 
   @Positive(message = "The amount must be positive.")
   BigDecimal amount,
+
+  @NotEmpty(message = "Reference is required.")
+  @Pattern(
+    regexp = "^\\d{2}/\\d{4}$",
+    message = "Reference must be in the format: xx/xxxx."
+  )
+  String reference,
+
+  @NotEmpty(message = "Type is required.")
+  @Pattern(
+    regexp = "^(COMMERCE|INDUSTRY|SERVICE_PROVISION)$",
+    message = "Allowed regimes: COMMERCE, INDUSTRY or SERVICE_PROVISION"
+  )
+  String type,
 
   @Valid
   CreateRecipientDto recipient
