@@ -1,15 +1,41 @@
 package com.ms.tax.calculator.domain.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class PresumedProfitTax extends Tax {
+@Entity
+@Table(name = "presumed_profit_taxes")
+public class PresumedProfitTax extends Tax implements Serializable {
 
+	@Serial
+	private static final long serialVersionUID = 1L;
+
+	@Column(name = "aliquot_irpj")
 	private String aliquotIRPJ;
+
+	@Column(name = "aliquot_iss")
 	private String aliquotISS;
+
+	@Column(name = "aliquot_confins")
 	private String aliquotCONFINS;
+
+	@Column(name = "tax_irpj")
 	private BigDecimal taxIRPJ;
+
+	@Column(name = "tax_iss")
 	private BigDecimal taxISS;
+
+	@Column(name = "tax_confins")
 	private BigDecimal taxCONFINS;
+
+	public PresumedProfitTax() {
+		super(null, null, null, null);
+	}
 
 	public PresumedProfitTax(
 	  String invoiceNumber,

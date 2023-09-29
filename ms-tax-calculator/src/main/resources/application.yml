@@ -9,6 +9,13 @@ spring:
     import: optional:file:ms-tax-calculator/.env[.properties]
     profiles:
       active: dev
+  datasource:
+    url: jdbc:mysql://localhost:${DB_PORT}/${DB_DATABASE}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
   cache:
     type: jcache
     jcache:

@@ -1,21 +1,25 @@
 package com.ms.tax.calculator.infra.services;
 
-import com.ms.tax.calculator.domain.entities.NationalSimpleTax;
-import com.ms.tax.calculator.domain.entities.PresumedProfitTax;
-import com.ms.tax.calculator.domain.entities.Tax;
-import com.ms.tax.calculator.infra.dtos.TaxResumeDto;
+import com.ms.tax.calculator.domain.entities.*;
+import com.ms.tax.calculator.infra.errors.*;
 import com.ms.tax.calculator.infra.proxies.InvoiceProxy;
 import com.ms.tax.calculator.infra.proxies.responses.Invoice;
+import com.ms.tax.calculator.infra.proxies.responses.User;
+import com.ms.tax.calculator.infra.repositories.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+
+import static java.nio.file.Files.getOwner;
 
 @Service
 public class CalculatorService {
@@ -23,26 +27,67 @@ public class CalculatorService {
 	@Autowired
 	private InvoiceProxy invoiceProxy;
 
-	public TaxResumeDto calculate(String cnpj) {
-		List<Invoice> invoices = invoiceProxy.listAll(cnpj);
-		List<Tax> taxes = new ArrayList<>();
+	@Autowired
+	private TaxResumeRepository repository;
+
+	@Autowired
+	private NationalSimpleTaxRepository nationalSimpleTaxRepository;
+
+	@Autowired
+	private PresumedProfitTaxRepository presumedProfitTaxRepository;
+
+	private final Logger logger = LoggerFactory.getLogger(CalculatorService.class);
+
+	public TaxResume calculate(String cnpj) {
 		var currentReference = getCurrentReference();
+		var resumes = repository.findByReference(currentReference);
 
-		invoices.stream()
-		  .filter(invoice -> invoice.reference().equals(currentReference))
-		  .forEach(invoice -> {
-			  Tax tax = switch (invoice.issuer().taxRegime()) {
-				  case SIMPLE_NATIONAL -> nationalSimpleTaxes(invoice);
-				  case PRESUMED_PROFIT -> presumedProfitTaxes(invoice);
-			  };
-			  taxes.add(tax);
-		  });
+		if (resumes.isEmpty()) {
+			List<Invoice> invoices = invoiceProxy.listAll(cnpj);
+			var taxes = calculateTaxPerInvoice(invoices, currentReference);
+			var amount = calculateTotalAmount(taxes);
 
-		var amount = taxes.stream()
-		  .map(Tax::getTaxAmount)
-		  .reduce(BigDecimal.ZERO, BigDecimal::add);
+			if (taxes.isEmpty()) {
+				logger.warn("No taxes payable to {}.", cnpj);
+				throw new NoTaxesPayableException();
+			}
 
-		return new TaxResumeDto(taxes, formatAmount(amount));
+			var owner = getCurrentUser();
+			var taxResume = new TaxResume(currentReference, amount, owner);
+			taxes.forEach(tax -> tax.setResume(taxResume));
+			taxResume.setTaxes(taxes);
+
+			repository.save(taxResume);
+
+			taxes.forEach(tax -> {
+				if (tax instanceof NationalSimpleTax) {
+					nationalSimpleTaxRepository.save((NationalSimpleTax) tax);
+				} else {
+					presumedProfitTaxRepository.save((PresumedProfitTax) tax);
+				}
+			});
+
+			logger.info("Taxes for reference {} were generated.", currentReference);
+
+			return taxResume;
+		}
+		return resumes.get();
+	}
+
+	public TaxResume pay(String id) {
+		var entity = repository.findById(id)
+		  .orElseThrow(() -> new NotFoundException("No such tax"));
+
+		if (!entity.getOwner().equals(getCurrentUser())) {
+			System.out.println(entity.getOwner());
+			System.out.println(getCurrentUser());
+			throw new UnauthorizedException();
+		}
+
+		entity.setPaid(true);
+		repository.save(entity);
+
+		return entity;
 	}
 
 	/**
@@ -51,7 +96,7 @@ public class CalculatorService {
 	 * INDUSTRY ----------------- 8.5%
 	 * SERVICE_PROVISION -------- 11%
 	 */
-	private NationalSimpleTax nationalSimpleTaxes(Invoice invoice) {
+	private NationalSimpleTax calculateNationalSimpleTaxes(Invoice invoice) {
 		var aliquot = "";
 		var total = switch (invoice.type()) {
 			case COMMERCE -> {
@@ -84,7 +129,7 @@ public class CalculatorService {
 	 * ISS ----------- 2%
 	 * COFINS -------- 3%
 	 */
-	private PresumedProfitTax presumedProfitTaxes(Invoice invoice) {
+	private PresumedProfitTax calculatePresumedProfitTaxes(Invoice invoice) {
 		var irpj = getTax(4.8F, invoice.amount());
 		var iss = getTax(2F, invoice.amount());
 		var confis = getTax(3F, invoice.amount());
@@ -105,6 +150,29 @@ public class CalculatorService {
 		);
 	}
 
+	private BigDecimal calculateTotalAmount(List<Tax> taxes) {
+		return taxes.stream()
+		  .map(Tax::getTaxAmount)
+		  .reduce(BigDecimal.ZERO, BigDecimal::add);
+	}
+
+	private List<Tax> calculateTaxPerInvoice(List<Invoice> invoices, String currentReference) {
+		List<Tax> taxes = new ArrayList<>();
+
+		invoices.stream()
+		  .filter(invoice -> invoice.reference().equals(currentReference))
+		  .filter(invoice -> !invoice.isCanceled())
+		  .forEach(invoice -> {
+			  var tax = switch (invoice.issuer().taxRegime()) {
+				  case SIMPLE_NATIONAL -> calculateNationalSimpleTaxes(invoice);
+				  case PRESUMED_PROFIT -> calculatePresumedProfitTaxes(invoice);
+			  };
+			  taxes.add(tax);
+		  });
+
+		return taxes;
+	}
+
 	private BigDecimal getTax(float percentage, BigDecimal amount) {
 		return amount.divide(BigDecimal.valueOf(100), RoundingMode.UP)
 		  .multiply(BigDecimal.valueOf(percentage));
@@ -112,13 +180,14 @@ public class CalculatorService {
 
 	private String getCurrentReference() {
 		var now = LocalDate.now();
-		var monthValue = now.getMonthValue();
+		var monthValue = now.getMonthValue() - 1;
 		var month = monthValue < 10 ? "0" + monthValue : String.valueOf(monthValue);
 		return month + "/" + now.getYear();
 	}
 
-	private String formatAmount(BigDecimal amount) {
-		var formatter = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-		return formatter.format(amount);
+	private String getCurrentUser() {
+		var auth = SecurityContextHolder.getContext().getAuthentication();
+		var user = (User) auth.getPrincipal();
+		return user.getId();
 	}
 }

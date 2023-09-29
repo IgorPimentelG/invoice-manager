@@ -1,5 +1,7 @@
 package com.ms.tax.calculator.main.config;
 
+import com.ms.tax.calculator.infra.errors.NoTaxesPayableException;
+import com.ms.tax.calculator.infra.errors.NotFoundException;
 import com.ms.tax.calculator.infra.errors.UnauthorizedException;
 import com.ms.tax.calculator.main.properties.ExceptionResponse;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,22 @@ public class ResponseExceptionConfig extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(
 		  responseFactory(ex, 403),
 		  HttpStatus.FORBIDDEN
+		);
+	}
+
+	@ExceptionHandler(NotFoundException.class)
+	public final ResponseEntity<ExceptionResponse> handleNotFoundException(Exception ex) {
+		return new ResponseEntity<>(
+		  responseFactory(ex, 404),
+		  HttpStatus.NOT_FOUND
+		);
+	}
+
+	@ExceptionHandler(NoTaxesPayableException.class)
+	public final ResponseEntity<ExceptionResponse> handleConflictException(Exception ex) {
+		return new ResponseEntity<>(
+		  responseFactory(ex, 409),
+		  HttpStatus.CONFLICT
 		);
 	}
 
