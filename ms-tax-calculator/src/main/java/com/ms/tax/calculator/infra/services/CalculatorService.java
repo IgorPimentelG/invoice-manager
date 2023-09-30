@@ -7,6 +7,7 @@ import com.ms.tax.calculator.infra.proxies.InvoiceProxy;
 import com.ms.tax.calculator.infra.proxies.responses.Invoice;
 import com.ms.tax.calculator.infra.proxies.responses.User;
 import com.ms.tax.calculator.infra.repositories.*;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ public class CalculatorService {
 
 	private final Logger logger = LoggerFactory.getLogger(CalculatorService.class);
 
+	@CircuitBreaker(name = "cb_ms-electronic-invoice")
 	public TaxResume calculate(String cnpj) {
 		var currentReference = getCurrentReference();
 		var resumes = repository.findByReference(currentReference);

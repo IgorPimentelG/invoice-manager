@@ -102,6 +102,10 @@
                 <span class="label">Gerente: </span>
                 <span th:text="${owner}"></span>
             </div>
+            <div>
+                <span class="label">Pago: </span>
+                <span th:text="${isPaid} ? 'sim' : 'não'"></span>
+            </div>
         </div>
     </header>
 

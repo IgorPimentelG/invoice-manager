@@ -50,3 +50,10 @@ eureka:
 
 springdoc:
   show-actuator: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      cb_ms-electronic-invoice:
+        minimumNumberOfCalls: 4
+        slidingWindowSize: 8

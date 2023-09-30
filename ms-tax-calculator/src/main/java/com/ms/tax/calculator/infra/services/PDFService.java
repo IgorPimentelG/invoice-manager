@@ -4,9 +4,11 @@ import com.ms.tax.calculator.domain.entities.NationalSimpleTax;
 import com.ms.tax.calculator.domain.entities.PresumedProfitTax;
 import com.ms.tax.calculator.domain.entities.TaxResume;
 import com.ms.tax.calculator.infra.errors.BadRequestException;
+import com.ms.tax.calculator.infra.errors.NotFoundException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -27,17 +29,17 @@ import java.util.Base64;
 public class PDFService {
 
 	private final Logger logger = LoggerFactory.getLogger(PDFService.class);
+	private final String OUTPUT_DIR = System.getProperty("user.dir") + File.separator  + "ms-tax-calculator"
+	  + File.separator + "files" + File.separator + "taxes";
 
 	public void printSummary(TaxResume taxResume) {
 		try {
 			var content = parseThymeleafTemplate(taxResume);
-			var outputDir = System.getProperty("user.dir") + File.separator  + "ms-tax-calculator"
-			  + File.separator + "files" + File.separator + "taxes";
 
-			createDirectory(outputDir);
+			createDirectory(OUTPUT_DIR);
 
 			OutputStream outputStream = new FileOutputStream(
-			  outputDir + File.separator + taxResume.getId() + ".pdf"
+			  OUTPUT_DIR + File.separator + taxResume.getId() + ".pdf"
 			);
 
 			var renderer = new ITextRenderer();
@@ -46,6 +48,24 @@ public class PDFService {
 			renderer.createPDF(outputStream);
 			outputStream.close();
 		} catch (Exception e) {
+			throw new BadRequestException(e.getMessage());
+		}
+	}
+
+	public Resource loadFile(String filename) {
+		try {
+			Path storageLocation = Paths.get(OUTPUT_DIR).toAbsolutePath().normalize();
+			Path fileLocation = storageLocation.resolve(filename).normalize();
+			Resource resource = new UrlResource(fileLocation.toUri());
+
+			if (resource.exists()) {
+				return resource;
+			}
+
+			logger.warn("The file {} not found.", filename);
+			throw new NotFoundException("Tax not found.");
+		} catch (Exception e) {
+			logger.warn("Error loading file.");
 			throw new BadRequestException(e.getMessage());
 		}
 	}
@@ -77,6 +97,7 @@ public class PDFService {
 		context.setVariable("reference", taxResume.getReference());
 		context.setVariable("owner", taxResume.getOwner());
 		context.setVariable("total", taxResume.getAmount());
+		context.setVariable("isPaid", taxResume.isPaid());
 		context.setVariable("nationalSimpleTaxes", nationalSimpleTaxes);
 		context.setVariable("presumedProfitTaxes", presumedProfitTaxes);
 

@@ -2,6 +2,7 @@ package com.ms.tax.calculator.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,7 +13,7 @@ import java.util.Locale;
 
 @Entity
 @Table(name = "tax_resumes")
-public class TaxResume implements Serializable {
+public class TaxResume extends RepresentationModel<TaxResume> implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
