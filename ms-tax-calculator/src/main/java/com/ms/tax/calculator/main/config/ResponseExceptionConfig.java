@@ -1,5 +1,6 @@
 package com.ms.tax.calculator.main.config;
 
+import com.ms.tax.calculator.infra.errors.BadRequestException;
 import com.ms.tax.calculator.infra.errors.NoTaxesPayableException;
 import com.ms.tax.calculator.infra.errors.NotFoundException;
 import com.ms.tax.calculator.infra.errors.UnauthorizedException;
@@ -19,6 +20,14 @@ public class ResponseExceptionConfig extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<ExceptionResponse> handleDefaultException(Exception ex) {
+		return new ResponseEntity<>(
+		  responseFactory(ex, 400),
+		  HttpStatus.BAD_REQUEST
+		);
+	}
+
+	@ExceptionHandler(BadRequestException.class)
+	public final ResponseEntity<ExceptionResponse> handleBadRequestException(Exception ex) {
 		return new ResponseEntity<>(
 		  responseFactory(ex, 400),
 		  HttpStatus.BAD_REQUEST

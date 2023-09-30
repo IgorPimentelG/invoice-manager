@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            padding: 4px;
+        }
+
+        #header {
+          width: 100%;
+          height: 100%;
+        }
+
+        #logo {
+           text-align: center;
+        }
+
+        #logo img {
+            vertical-align: middle;
+            width: 200px;
+            height: 100px;
+        }
+
+        #info {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            border: 1px solid;
+            padding: 8px 16px;
+        }
+
+        #info p {
+            margin: 8px 0;
+        }
+
+        #content {
+            margin-top: 16px;
+            border: 1px solid;
+            padding: 16px 8px 4px 16px;
+        }
+
+        #total {
+            margin-top: 24px;
+            text-align: right;
+        }
+
+        #total p {
+           text-align: end;
+           font-size: 12px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+         .title {
+            margin-bottom: 4px;
+        }
+
+        h2 {
+            margin-bottom: 16px;
+        }
+
+        table {
+            margin-bottom: 16px;
+        }
+
+        table, th, td {
+            border: 1px solid;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th {
+            padding: 4px 8px;
+            font-size: 10px;
+        }
+
+        td {
+            padding: 4px;
+            font-size: 10px;
+        }
+    </style>
+    <meta charset="UTF-8" />
+</head>
+<body>
+    <header>
+        <div id="logo">
+            <img th:src="${logo}" />
+        </div>
+
+        <div id="info">
+            <div>
+                <span class="label">Referência: </span>
+                <span th:text="${reference}"></span>
+            </div>
+            <div>
+                <span class="label">Gerente: </span>
+                <span th:text="${owner}"></span>
+            </div>
+        </div>
+    </header>
+
+    <hr />
+
+    <div id="content">
+        <h2>Resumo</h2>
+        <p th:if="${nationalSimpleTaxes.size() > 0}" class="title">Simples Nacional</p>
+        <table th:if="${nationalSimpleTaxes.size() > 0}">
+            <thead>
+                <tr>
+                    <th>Nota</th>
+                    <th>Regime Tributário</th>
+                    <th>Natureza</th>
+                    <th>Valor</th>
+                    <th>Alíquota</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="tax: ${nationalSimpleTaxes}">
+                    <td th:text="${tax.invoiceNumber}"></td>
+                    <td th:text="${tax.regime}"></td>
+                    <td th:text="${tax.type}"></td>
+                    <td th:text="'R$ ' + ${tax.invoiceAmount}"></td>
+                    <td th:text="${tax.aliquot}"></td>
+                    <td th:text="'R$ ' + ${tax.taxAmount}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p th:if="${presumedProfitTaxes.size() > 0}" class="title">Lucro Presumido</p>
+        <table th:if="${presumedProfitTaxes.size() > 0}">
+            <thead>
+                <tr>
+                    <th>Nota</th>
+                    <th>Regime Tributário</th>
+                    <th>Valor</th>
+                    <th>Alíquota IRPJ</th>
+                    <th>Alíquota ISS</th>
+                    <th>Alíquota CONFINS</th>
+                    <th>IRPJ</th>
+                    <th>ISS</th>
+                    <th>CONFINS</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="tax: ${presumedProfitTaxes}">
+                    <td th:text="${tax.invoiceNumber}"></td>
+                    <td th:text="${tax.type}"></td>
+                    <td th:text="'R$ ' + ${tax.invoiceAmount}"></td>
+                    <td th:text="${tax.aliquotIRPJ}"></td>
+                    <td th:text="${tax.aliquotISS}"></td>
+                    <td th:text="${tax.aliquotCONFINS}"></td>
+                    <td th:text="${tax.taxIRPJ}"></td>
+                    <td th:text="${tax.taxISS}"></td>
+                    <td th:text="${tax.taxCONFINS}"></td>
+                    <td th:text="'R$ ' + ${tax.taxAmount}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="total">
+        <span class="label">Total: </span>
+        <span th:text="${total}">Total: </span>
+    </div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com.ms.tax.calculator.infra.services;
 
 import com.ms.tax.calculator.domain.entities.*;
+import com.ms.tax.calculator.domain.types.CompanyType;
 import com.ms.tax.calculator.infra.errors.*;
 import com.ms.tax.calculator.infra.proxies.InvoiceProxy;
 import com.ms.tax.calculator.infra.proxies.responses.Invoice;
@@ -79,8 +80,6 @@ public class CalculatorService {
 		  .orElseThrow(() -> new NotFoundException("No such tax"));
 
 		if (!entity.getOwner().equals(getCurrentUser())) {
-			System.out.println(entity.getOwner());
-			System.out.println(getCurrentUser());
 			throw new UnauthorizedException();
 		}
 
@@ -115,11 +114,11 @@ public class CalculatorService {
 
 		return new NationalSimpleTax(
 		  invoice.number(),
-		  "SIMPLE NATIONAL",
+		  "Simples Nacional",
 		  invoice.amount(),
 		  total,
 		  aliquot,
-		  invoice.type().toString().replaceAll("_", " ")
+		  translateType(invoice.type())
 		);
 	}
 
@@ -138,7 +137,7 @@ public class CalculatorService {
 
 		return new PresumedProfitTax(
 		  invoice.number(),
-		  "PRESUMED PROFIT",
+		  "Lucro Presumido",
 		  invoice.amount(),
 		  total,
 		  "4.8%",
@@ -189,5 +188,13 @@ public class CalculatorService {
 		var auth = SecurityContextHolder.getContext().getAuthentication();
 		var user = (User) auth.getPrincipal();
 		return user.getId();
+	}
+
+	private String translateType(CompanyType type) {
+		return switch (type) {
+			case COMMERCE -> "Comércio";
+			case INDUSTRY -> "Indústria";
+			case SERVICE_PROVISION -> "Prestação de serviço";
+		};
 	}
 }

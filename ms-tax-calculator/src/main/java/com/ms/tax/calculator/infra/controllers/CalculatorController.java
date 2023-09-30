@@ -4,6 +4,7 @@ import com.ms.tax.calculator.domain.entities.TaxResume;
 import com.ms.tax.calculator.infra.controllers.docs.ApiOperationCalculate;
 import com.ms.tax.calculator.infra.controllers.docs.ApiOperationPay;
 import com.ms.tax.calculator.infra.services.CalculatorService;
+import com.ms.tax.calculator.infra.services.PDFService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,14 @@ public class CalculatorController {
 	@Autowired
 	private CalculatorService service;
 
+	@Autowired
+	private PDFService pdfService;
+
 	@ApiOperationCalculate
 	@GetMapping("/v1/taxes/{cnpj}")
 	public ResponseEntity<TaxResume> calculate(@PathVariable("cnpj") String cnpj) {
 		var result = service.calculate(cnpj);
+		pdfService.printSummary(result);
 		return ResponseEntity.ok(result);
 	}
 
