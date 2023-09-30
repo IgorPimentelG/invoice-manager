@@ -4,6 +4,7 @@ import com.ms.electronic.invoice.domain.errors.FormatException;
 import com.ms.electronic.invoice.domain.errors.IncorrectValueException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,6 +51,26 @@ public abstract class InvoiceValidator {
 
 			if (!matcher.matches()) {
 				throw new FormatException("Invalid invoice number.");
+			}
+			return this;
+		}
+
+		public InvoiceValidationBuilder isReference() {
+			Pattern pattern = Pattern.compile("^\\d{2}/\\d{4}$");
+			Matcher matcher = pattern.matcher(value);
+
+			if (!matcher.matches()) {
+				throw new FormatException("Reference must be in the format: xx/xxxx.");
+			}
+
+			var values = value.split("/");
+			var month = Integer.parseInt(values[0]);
+			var year = Integer.parseInt(values[1]);
+
+			if (month <= 0 || month > 12 ) {
+				throw new IncorrectValueException("Invalid month.");
+			} else if (year < LocalDate.EPOCH.getYear()) {
+				throw new IncorrectValueException("Can't release notes from the past.");
 			}
 			return this;
 		}

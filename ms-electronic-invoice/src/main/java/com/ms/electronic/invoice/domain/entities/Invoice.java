@@ -1,5 +1,6 @@
 package com.ms.electronic.invoice.domain.entities;
 
+import com.ms.electronic.invoice.domain.types.CompanyType;
 import com.ms.electronic.invoice.domain.validation.InvoiceValidator;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -30,6 +31,11 @@ public class Invoice extends RepresentationModel<Invoice> implements Serializabl
 
 	private BigDecimal amount;
 
+	private String reference;
+
+	@Enumerated(EnumType.STRING)
+	private CompanyType type;
+
 	@Column(name = "canceled")
 	private boolean isCanceled;
 
@@ -50,13 +56,18 @@ public class Invoice extends RepresentationModel<Invoice> implements Serializabl
 	  String validationCode,
 	  String description,
 	  BigDecimal value,
+	  String reference,
+	  CompanyType type,
 	  Recipient recipient,
 	  Issuer issuer
 	) {
-		this.number = number;
-		this.validationCode = validationCode;
-		this.description = description;
-		this.amount = value;
+		setNumber(number);
+		setValidationCode(validationCode);
+		setDescription(description);
+		setAmount(value);
+		setReference(reference);
+		setType(type);
+
 		this.recipient = recipient;
 		this.issuer = issuer;
 
@@ -117,6 +128,25 @@ public class Invoice extends RepresentationModel<Invoice> implements Serializabl
 		InvoiceValidator.validate(String.valueOf(amount))
 		  .isPositive();
 		this.amount = amount;
+	}
+
+	public String getReference() {
+		return reference;
+	}
+
+	public void setReference(String reference) {
+		InvoiceValidator.validate(reference)
+		  .isEmpty("Reference cannot be empty.")
+		  .isReference();
+		this.reference = reference;
+	}
+
+	public CompanyType getType() {
+		return type;
+	}
+
+	public void setType(CompanyType type) {
+		this.type = type;
 	}
 
 	public Recipient getRecipient() {

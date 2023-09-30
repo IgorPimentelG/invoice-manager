@@ -1,6 +1,7 @@
 package com.ms.electronic.invoice.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ms.electronic.invoice.domain.types.TaxRegime;
 import com.ms.electronic.invoice.domain.validation.CompanyValidator;
 import jakarta.persistence.*;
 
@@ -23,6 +24,10 @@ public class Issuer implements Serializable {
 	@Column(name = "corporate_name")
 	private String corporateName;
 
+	@Column(name = "tax_regime")
+	@Enumerated(EnumType.STRING)
+	private TaxRegime taxRegime;
+
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")
 	private Address address;
@@ -35,9 +40,10 @@ public class Issuer implements Serializable {
 		this.invoices = new ArrayList<>();
 	}
 
-	public Issuer(String CNPJ, String corporateName, Address address) {
+	public Issuer(String CNPJ, String corporateName, TaxRegime taxRegime, Address address) {
 		this.cnpj = CNPJ;
 		this.corporateName = corporateName;
+		this.taxRegime = taxRegime;
 		this.address = address;
 
 		this.invoices = new ArrayList<>();
@@ -62,6 +68,14 @@ public class Issuer implements Serializable {
 		CompanyValidator.validate(corporateName)
 		  .isEmpty("Corporate name cannot be empty");
 		this.corporateName = corporateName;
+	}
+
+	public TaxRegime getTaxRegime() {
+		return taxRegime;
+	}
+
+	public void setTaxRegime(TaxRegime taxRegime) {
+		this.taxRegime = taxRegime;
 	}
 
 	public Address getAddress() {

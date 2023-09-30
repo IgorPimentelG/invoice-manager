@@ -2,12 +2,16 @@ package com.ms.electronic.invoice.infra.services;
 
 import com.ms.electronic.invoice.domain.entities.Invoice;
 import com.ms.electronic.invoice.domain.entities.Issuer;
+import com.ms.electronic.invoice.domain.types.TaxRegime;
+import com.ms.electronic.invoice.infra.dtos.ValidationDto;
 import com.ms.electronic.invoice.infra.errors.BadRequestException;
 import com.ms.electronic.invoice.infra.errors.NotFoundException;
+import com.ms.electronic.invoice.infra.errors.UnauthorizedException;
 import com.ms.electronic.invoice.infra.proxies.CompanyProxy;
 import com.ms.electronic.invoice.infra.proxies.responses.Company;
 import com.ms.electronic.invoice.infra.repositories.InvoiceRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,18 +46,18 @@ public class InvoiceService {
 	@CircuitBreaker(name = "cb_ms-client")
 	public Invoice create(
 	  String issuerCnpj,
-	  Invoice invoice,
-	  String credentials
+	  Invoice invoice
 	) {
 		if (invoice == null) {
 			throw new BadRequestException("Invoice data cannot be null.");
 		}
 
 		try {
-			var company = companyProxy.getCompany(issuerCnpj, credentials);
+			var company = companyProxy.getCompany(issuerCnpj);
 			var issuer = new Issuer(
 			  company.cnpj(),
 			  company.corporateName(),
+			  TaxRegime.valueOf(company.taxRegime()),
 			  company.address().get(0)
 			);
 
@@ -95,13 +99,31 @@ public class InvoiceService {
 		return entities;
 	}
 
-	public void cancel(String number) {
+	public Invoice cancel(String number) {
 		var entity = findById(number);
-		entity.setCanceled(true);
+		try {
+			companyProxy.getCompany(entity.getIssuer().getCnpj().replaceAll("[./-]", ""));
+			entity.setCanceled(true);
 
-		logger.info("Invoice {}, was canceled.", number);
+			logger.info("Invoice {}, was canceled.", number);
 
-		repository.save(entity);
+			repository.save(entity);
+			return entity;
+		} catch (Exception ignored) {
+			throw new UnauthorizedException();
+		}
+	}
+
+	public ValidationDto validate(String number, String validationCode) {
+		var entity = findById(number);
+		var isValid = codeService.validateCode(number, validationCode);
+
+		return new ValidationDto(
+			number,
+		    entity.getIssuer().getCnpj(),
+		    entity.getRecipient().getCnpj(),
+		    isValid
+		);
 	}
 
 	private void notify(Company company, String invoiceNumber) {

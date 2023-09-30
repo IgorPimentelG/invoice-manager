@@ -60,8 +60,12 @@ public class CodeService {
 	}
 
 	public boolean validateCode(String code, String hash) {
-		var decryptedHash = decryptHash(hash);
-		return code.equals(decryptedHash);
+		try {
+			var decryptedHash = decryptHash(hash);
+			return code.equals(decryptedHash);
+		} catch (Exception ignored) {
+			return false;
+		}
 	}
 
 	private String decryptHash(String hash) {

@@ -12,7 +12,6 @@ import com.ms.client.infra.repositories.ManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Date;
 
@@ -24,6 +23,9 @@ public class TokenService {
 
 	@Value("${security.jwt.token.expire-length}")
 	private long validityInMilliseconds;
+
+	@Value("${security.jwt.token.issuer-url}")
+	private String issuerUrl;
 
 	@Autowired
 	private ManagerRepository repository;
@@ -65,7 +67,7 @@ public class TokenService {
 
 	public String validateToken(String token) {
 		return JWT.require(getAlgorithm())
-		  .withIssuer(getIssuerUrl())
+		  .withIssuer(issuerUrl)
 		  .build()
 		  .verify(token)
 		  .getSubject();
@@ -81,7 +83,7 @@ public class TokenService {
 
 	private String getAccessToken(Manager manager, Date expiration) {
 		return JWT.create()
-		  .withIssuer(getIssuerUrl())
+		  .withIssuer(issuerUrl)
 		  .withSubject(manager.getEmail())
 		  .withExpiresAt(expiration)
 		  .sign(getAlgorithm());
@@ -98,11 +100,5 @@ public class TokenService {
 
 	private Algorithm getAlgorithm() {
 		return Algorithm.HMAC256(secretKey);
-	}
-
-	private String getIssuerUrl() {
-		return ServletUriComponentsBuilder.fromCurrentContextPath()
-		  .build()
-		  .toUriString();
 	}
 }

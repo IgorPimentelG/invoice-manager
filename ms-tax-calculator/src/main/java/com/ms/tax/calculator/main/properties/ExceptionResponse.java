@@ -1,4 +1,4 @@
-package com.ms.client.main.middlewares.error;
+package com.ms.tax.calculator.main.properties;
 
 import java.time.LocalDateTime;
 

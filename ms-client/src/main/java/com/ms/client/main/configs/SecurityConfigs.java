@@ -1,4 +1,4 @@
-package com.ms.client.main.middlewares.security;
+package com.ms.client.main.configs;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfigs {
 
 	@Autowired
-	private SecurityFilter securityFilter;
+	private SecurityFilterConfig securityFilter;
+
+	private final String[] WHITE_LIST = {
+	  "/api/auth/sign-up", "/api/auth/sign-in", "/api/auth/reset",
+	  "/api/auth/change-password/**", "/api/auth/verify-code/**", "/api/auth/recover-account/**",
+	  "/v3/api-docs/**", "/swagger-ui/**", "/actuator/**"
+	};
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -25,17 +31,7 @@ public class SecurityConfigs {
 		  csrf(AbstractHttpConfigurer::disable)
 		  .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		  .authorizeHttpRequests(authorize -> authorize
-		    .requestMatchers(
-			  "/api/auth/sign-up",
-		      "/api/auth/sign-in",
-		      "/api/auth/reset",
-		      "/api/auth/change-password/**",
-		      "/api/auth/verify-code/**",
-		      "/api/auth/recover-account/**",
-		      "/v3/api-docs/**",
-		      "/swagger-ui/**",
-		      "/actuator/**"
-		    ).permitAll()
+		    .requestMatchers(WHITE_LIST).permitAll()
 		    .anyRequest().authenticated()
 		  )
 		  .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

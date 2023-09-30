@@ -9,7 +9,7 @@ import io.swagger.v3.oas.models.info.License;
 import org.springframework.context.annotation.Bean;
 
 @OpenAPIDefinition(info = @Info(title = "MS Client", version = "0.0.1"))
-public class OpenApiConfiguration {
+public class OpenApiConfig {
 
 	@Bean
 	public OpenAPI customOpenAPI() {

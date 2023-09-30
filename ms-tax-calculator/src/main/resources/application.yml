@@ -9,6 +9,13 @@ spring:
     import: optional:file:ms-tax-calculator/.env[.properties]
     profiles:
       active: dev
+  datasource:
+    url: jdbc:mysql://localhost:${DB_PORT}/${DB_DATABASE}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
   cache:
     type: jcache
     jcache:
@@ -26,6 +33,11 @@ bucket4j:
               time: 60
               unit: seconds
 
+security:
+  service-auth:
+    username: ${SERVICE_AUTH_USERNAME}
+    password: ${SERVICE_AUTH_PASSWORD}
+
 management:
   tracing:
     sampling:
@@ -38,3 +50,10 @@ eureka:
 
 springdoc:
   show-actuator: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      cb_ms-electronic-invoice:
+        minimumNumberOfCalls: 4
+        slidingWindowSize: 8

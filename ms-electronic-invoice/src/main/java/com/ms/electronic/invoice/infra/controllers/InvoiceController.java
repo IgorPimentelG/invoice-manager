@@ -6,6 +6,7 @@ import com.ms.electronic.invoice.infra.controllers.docs.ApiOperationFind;
 import com.ms.electronic.invoice.infra.controllers.docs.ApiOperationList;
 import com.ms.electronic.invoice.infra.controllers.docs.ApiOperationRegister;
 import com.ms.electronic.invoice.infra.dtos.CreateInvoiceDto;
+import com.ms.electronic.invoice.infra.dtos.ValidationDto;
 import com.ms.electronic.invoice.infra.helpers.FormatCNPJ;
 import com.ms.electronic.invoice.infra.mappers.InvoiceMapper;
 import com.ms.electronic.invoice.infra.services.InvoiceService;
@@ -42,11 +43,7 @@ public class InvoiceController {
 	) {
 		Invoice invoice = invoiceMapper.createEntity(data);
 
-		var result = service.create(
-		  cnpj,
-		  invoice,
-		  request.getHeader("Authorization")
-		);
+		var result = service.create(cnpj, invoice);
 
 		result.add(
 		  linkTo(methodOn(InvoiceController.class).find(result.getNumber())).withSelfRel()
@@ -81,10 +78,24 @@ public class InvoiceController {
 		return ResponseEntity.ok(result);
 	}
 
+	@GetMapping("/v1/validate")
+	public ResponseEntity<ValidationDto> validate(
+	  @RequestParam("number") String number,
+	  @RequestParam("code") String code
+	) {
+		var result = service.validate(number, code);
+		return ResponseEntity.ok(result);
+	}
+
 	@ApiOperationCancel
 	@PatchMapping("/v1/cancel/{number}")
-	public ResponseEntity<?> cancelInvoice(@PathVariable("number") String number) {
-		service.cancel(number);
-		return ResponseEntity.noContent().build();
+	public ResponseEntity<Invoice> cancelInvoice(@PathVariable("number") String number) {
+		var result = service.cancel(number);
+
+		result.add(
+		  linkTo(methodOn(InvoiceController.class).listAll(result.getIssuer().getCnpj())).withSelfRel()
+		);
+
+		return ResponseEntity.ok(result);
 	}
 }

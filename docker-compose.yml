@@ -76,8 +76,25 @@ services:
     networks:
       - invoice-manager
 
+  db-ms-tax-calculator:
+    container_name: 006-db-ms-tax-calculator
+    image: mysql:8.1
+    restart: on-failure
+    ports:
+      - '${DB_MS_TAX_CALCULATOR_PORT}:${DB_MS_TAX_CALCULATOR_PORT}'
+    volumes:
+      - mysql_data_ms_tax_calculator:/var/lib/mysql
+    environment:
+      MYSQL_TCP_PORT: ${DB_MS_TAX_CALCULATOR_PORT}
+      MYSQL_DATABASE: ${DB_MS_TAX_CALCULATOR_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    networks:
+      - invoice-manager
+
   service-registry:
-    container_name: 006-service-registry
+    container_name: 007-service-registry
     image: service-registry:0.0.1-SNAPSHOT
     env_file:
       - /service-registry/.env
@@ -86,12 +103,28 @@ services:
     networks:
       - invoice-manager
 
+  service-auth:
+    container_name: 008-service-auth
+    image: service-auth:0.0.1-SNAPSHOT
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-client:${DB_MS_CLIENT_PORT}/${DB_MS_CLIENT_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:  http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
+    env_file:
+      - /service-auth/.env
+    ports:
+      - '9000:9000'
+    networks:
+      - invoice-manager
+    depends_on:
+      - service-registry
+      - db-ms-client
+
   service-gateway:
-    container_name: 007-service-gateway
+    container_name: 009-service-gateway
     image: service-gateway:0.0.1-SNAPSHOT
     restart: on-failure
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411
       SPRING_ZIPKIN_SENDER_TYPE: rabbit
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -101,18 +134,22 @@ services:
       - '8080:8080'
     depends_on:
       - service-registry
+      - service-auth
       - db-ms-client
+      - ms-client
+      - ms-email
+      - ms-electronic-invoice
       - rabbitmq
     networks:
       - invoice-manager
 
   ms-client:
-    container_name: 008-ms-client
+    container_name: 010-ms-client
     image: ms-client:0.0.1-SNAPSHOT
     restart: on-failure
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-client:${DB_MS_CLIENT_PORT}/${DB_MS_CLIENT_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411
       SPRING_ZIPKIN_SENDER_TYPE: rabbit
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -128,12 +165,12 @@ services:
       - invoice-manager
 
   ms-email:
-    container_name: 009-ms-email
+    container_name: 011-ms-email
     image: ms-email:0.0.1-SNAPSHOT
     restart: on-failure
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-email:${DB_MS_EMAIL_PORT}/${DB_MS_EMAIL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8081/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:  http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411
       SPRING_ZIPKIN_SENDER_TYPE: rabbit
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -143,8 +180,29 @@ services:
       - '8084:8084'
     depends_on:
       - service-registry
+      - service-auth
       - db-ms-email
       - rabbitmq
+    networks:
+      - invoice-manager
+
+  ms-electronic-invoice:
+    container_name: 012-ms-electronic-invoice
+    image: ms-electronic-invoice:0.0.1-SNAPSHOT
+    restart: on-failure
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-electronic-invoice:${DB_MS_ELECTRONIC_INVOICE_PORT}/${DB_MS_ELECTRONIC_INVOICE_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
+      SPRING_ZIPKIN_BASEURL: http://zipkin:9411
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+    env_file:
+      - /ms-electronic-invoice/.env
+    ports:
+      - '8085:8085'
+    depends_on:
+      - service-registry
+      - service-auth
+      - db-ms-electronic-invoice
     networks:
       - invoice-manager
 
@@ -152,6 +210,7 @@ volumes:
   mysql_data_ms_client:
   mysql_data_ms_email:
   mysql_data_ms_electronic_invoice:
+  mysql_data_ms_tax_calculator:
 
 networks:
   invoice-manager:
