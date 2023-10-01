@@ -94,11 +94,16 @@ arquivos PDF.
 |:--|:-----------------------------|
 | ❌ | 100% de cobertura dos testes |
 
+
+## Requisitos
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Insomnia](https://insomnia.rest/download)
+
 ## Execução
 
 1. Configure as variáveis de ambiente criando um arquivo com nome .env em cada microserviço. Na raiz de cada diretório, é possível encontrar 
 o arquivo .env.exemple com os valores necessários.
-
 
 
 2. Execute a construção das imagens Docker para os microserviços:
@@ -106,7 +111,12 @@ o arquivo .env.exemple com os valores necessários.
     mvn spring-boot:build-image -DskipTests
 ```
 
-3. Aguarde até que todos os contêineres estejam online.
+3. Execute os containers:
+```bash
+    docker-compose up -d
+```
+
+4.Aguarde até que todos os contêineres estejam online.
 
 
 ## Feedback
