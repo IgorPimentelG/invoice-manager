@@ -1,9 +1,7 @@
 package com.ms.client.infra.controllers;
 
 import com.ms.client.domain.entities.Manager;
-import com.ms.client.infra.controllers.docs.manager.ApiOperationDisable;
-import com.ms.client.infra.controllers.docs.manager.ApiOperationFind;
-import com.ms.client.infra.controllers.docs.manager.ApiOperationUpdate;
+import com.ms.client.infra.controllers.docs.manager.*;
 import com.ms.client.infra.dtos.UpdateManagerDto;
 import com.ms.client.infra.services.ManagerService;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,10 +1,7 @@
 package com.ms.client.infra.services;
 
-import com.ms.client.domain.entities.Address;
-import com.ms.client.domain.entities.Company;
-import com.ms.client.infra.errors.BadRequestException;
-import com.ms.client.infra.errors.LockedException;
-import com.ms.client.infra.errors.NotFoundException;
+import com.ms.client.domain.entities.*;
+import com.ms.client.infra.errors.*;
 import com.ms.client.infra.mappers.CompanyMapper;
 import com.ms.client.infra.repositories.CompanyRepository;
 import org.slf4j.Logger;

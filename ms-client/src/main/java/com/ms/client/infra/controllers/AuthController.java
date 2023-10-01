@@ -2,21 +2,14 @@ package com.ms.client.infra.controllers;
 
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.controllers.docs.auth.*;
-import com.ms.client.infra.dtos.AuthResponseDto;
-import com.ms.client.infra.dtos.ChangePasswordDto;
-import com.ms.client.infra.dtos.CreateManagerDto;
-import com.ms.client.infra.dtos.ManagerCredentials;
+import com.ms.client.infra.dtos.*;
 import com.ms.client.infra.mappers.ManagerMapper;
-import com.ms.client.infra.services.AccountService;
-import com.ms.client.infra.services.AuthenticationService;
+import com.ms.client.infra.services.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import static org.springframework.hateoas.server.core.DummyInvocationUtils.methodOn;
-import static org.springframework.hateoas.server.core.WebHandler.linkTo;
 
 @RestController
 @RequestMapping("/api/auth")

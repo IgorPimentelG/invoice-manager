@@ -8,8 +8,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface AddressMapper {
-
 	AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
-
 	void map(Address source, @MappingTarget Address target);
 }

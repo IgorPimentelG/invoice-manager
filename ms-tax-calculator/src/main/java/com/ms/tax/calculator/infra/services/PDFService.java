@@ -1,10 +1,7 @@
 package com.ms.tax.calculator.infra.services;
 
-import com.ms.tax.calculator.domain.entities.NationalSimpleTax;
-import com.ms.tax.calculator.domain.entities.PresumedProfitTax;
-import com.ms.tax.calculator.domain.entities.TaxResume;
-import com.ms.tax.calculator.infra.errors.BadRequestException;
-import com.ms.tax.calculator.infra.errors.NotFoundException;
+import com.ms.tax.calculator.domain.entities.*;
+import com.ms.tax.calculator.infra.errors.*;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

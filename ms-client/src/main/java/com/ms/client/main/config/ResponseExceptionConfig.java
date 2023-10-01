@@ -1,9 +1,6 @@
-package com.ms.client.main.configs;
+package com.ms.client.main.config;
 
-import com.ms.client.infra.errors.BadRequestException;
-import com.ms.client.infra.errors.LockedException;
-import com.ms.client.infra.errors.NotFoundException;
-import com.ms.client.infra.errors.UnauthorizedException;
+import com.ms.client.infra.errors.*;
 import com.ms.client.main.properties.ExceptionResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;

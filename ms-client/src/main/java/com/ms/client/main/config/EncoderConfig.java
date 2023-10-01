@@ -1,4 +1,4 @@
-package com.ms.client.main.configs;
+package com.ms.client.main.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

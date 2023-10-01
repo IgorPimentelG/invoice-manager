@@ -1,6 +1,5 @@
 package com.ms.electronic.invoice.infra.proxies;
 
-
 import com.ms.electronic.invoice.infra.proxies.responses.Company;
 import com.ms.electronic.invoice.main.config.FeignClientJwtAuthConfig;
 import org.springframework.cloud.openfeign.FeignClient;

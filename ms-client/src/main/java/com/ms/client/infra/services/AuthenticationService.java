@@ -2,9 +2,7 @@ package com.ms.client.infra.services;
 
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.dtos.AuthResponseDto;
-import com.ms.client.infra.errors.BadRequestException;
-import com.ms.client.infra.errors.NotFoundException;
-import com.ms.client.infra.errors.UnauthorizedException;
+import com.ms.client.infra.errors.*;
 import com.ms.client.infra.repositories.ManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

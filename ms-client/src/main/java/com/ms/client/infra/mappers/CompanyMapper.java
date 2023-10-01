@@ -2,8 +2,7 @@ package com.ms.client.infra.mappers;
 
 import com.ms.client.domain.entities.Company;
 import com.ms.client.domain.types.TaxRegime;
-import com.ms.client.infra.dtos.CreateCompanyDto;
-import com.ms.client.infra.dtos.UpdateCompanyDto;
+import com.ms.client.infra.dtos.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

@@ -1,7 +1,6 @@
 package com.ms.electronic.invoice.domain.validation;
 
-import com.ms.electronic.invoice.domain.errors.FormatException;
-import com.ms.electronic.invoice.domain.errors.IncorrectValueException;
+import com.ms.electronic.invoice.domain.errors.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

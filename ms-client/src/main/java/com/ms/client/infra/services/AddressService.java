@@ -1,8 +1,7 @@
 package com.ms.client.infra.services;
 
 import com.ms.client.domain.entities.Address;
-import com.ms.client.infra.errors.BadRequestException;
-import com.ms.client.infra.errors.NotFoundException;
+import com.ms.client.infra.errors.*;
 import com.ms.client.infra.mappers.AddressMapper;
 import com.ms.client.infra.repositories.AddressRepository;
 import org.slf4j.Logger;

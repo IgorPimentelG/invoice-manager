@@ -1,8 +1,6 @@
 package com.ms.tax.calculator.domain.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.io.Serial;

@@ -1,7 +1,7 @@
 package com.ms.service.auth.infra.controllers.docs;
 
 import com.ms.service.auth.domain.entities.User;
-import com.ms.service.auth.infra.error.InvalidTokenException;
+import com.ms.service.auth.infra.errors.InvalidTokenException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

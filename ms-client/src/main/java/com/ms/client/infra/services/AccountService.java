@@ -1,11 +1,8 @@
 package com.ms.client.infra.services;
 
-import com.ms.client.domain.entities.AccountVerification;
-import com.ms.client.domain.entities.Manager;
-import com.ms.client.infra.errors.BadRequestException;
-import com.ms.client.infra.errors.NotFoundException;
-import com.ms.client.infra.repositories.AccountVerificationRepository;
-import com.ms.client.infra.repositories.ManagerRepository;
+import com.ms.client.domain.entities.*;
+import com.ms.client.infra.errors.*;
+import com.ms.client.infra.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
