@@ -1,8 +1,7 @@
 package com.ms.client.infra.controllers.docs.manager;
 
 import com.ms.client.domain.entities.Manager;
-import com.ms.client.infra.errors.NotFoundException;
-import com.ms.client.infra.errors.UnauthorizedException;
+import com.ms.client.infra.errors.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

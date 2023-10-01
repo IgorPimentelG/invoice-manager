@@ -1,4 +1,4 @@
-package com.ms.service.gateway.main.configs;
+package com.ms.service.gateway.main.config;
 
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.properties.SwaggerUiConfigParameters;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-public class OpenApiConfiguration {
+public class OpenApiConfig {
 
 	@Bean
 	@Lazy(false)

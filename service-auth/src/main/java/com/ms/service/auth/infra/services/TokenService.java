@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ms.service.auth.domain.entities.User;
-import com.ms.service.auth.infra.error.InvalidTokenException;
+import com.ms.service.auth.infra.errors.InvalidTokenException;
 import com.ms.service.auth.infra.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

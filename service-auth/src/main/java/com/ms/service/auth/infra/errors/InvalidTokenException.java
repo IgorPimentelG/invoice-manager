@@ -1,4 +1,4 @@
-package com.ms.service.auth.infra.error;
+package com.ms.service.auth.infra.errors;
 
 public class InvalidTokenException extends RuntimeException {
 

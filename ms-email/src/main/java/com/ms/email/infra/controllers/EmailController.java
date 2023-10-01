@@ -2,9 +2,7 @@ package com.ms.email.infra.controllers;
 
 import com.ms.email.domain.entities.Email;
 import com.ms.email.domain.factories.EmailFactory;
-import com.ms.email.infra.controllers.docs.email.ApiOperationFindAll;
-import com.ms.email.infra.controllers.docs.email.ApiOperationFind;
-import com.ms.email.infra.controllers.docs.email.ApiOperationSend;
+import com.ms.email.infra.controllers.docs.email.*;
 import com.ms.email.infra.dtos.EmailDto;
 import com.ms.email.infra.services.EmailService;
 import io.swagger.v3.oas.annotations.tags.Tag;

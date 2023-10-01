@@ -1,4 +1,4 @@
-package com.ms.client.main.configs;
+package com.ms.client.main.config;
 
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.errors.NotFoundException;

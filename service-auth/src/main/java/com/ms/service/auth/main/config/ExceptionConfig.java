@@ -1,6 +1,6 @@
 package com.ms.service.auth.main.config;
 
-import com.ms.service.auth.infra.error.InvalidTokenException;
+import com.ms.service.auth.infra.errors.InvalidTokenException;
 import com.ms.service.auth.main.properties.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,7 @@
 package com.ms.electronic.invoice.infra.services;
 
 import com.ms.electronic.invoice.domain.entities.Address;
-import com.ms.electronic.invoice.infra.errors.BadRequestException;
-import com.ms.electronic.invoice.infra.errors.NotFoundException;
+import com.ms.electronic.invoice.infra.errors.*;
 import com.ms.electronic.invoice.infra.mappers.AddressMapper;
 import com.ms.electronic.invoice.infra.repositories.AddressRepository;
 import org.slf4j.Logger;

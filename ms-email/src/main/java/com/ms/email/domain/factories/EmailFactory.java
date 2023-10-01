@@ -1,7 +1,6 @@
 package com.ms.email.domain.factories;
 
 import com.ms.email.domain.entities.Email;
-import com.ms.email.domain.errors.IncorrectValueException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;

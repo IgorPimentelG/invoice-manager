@@ -4,14 +4,12 @@ import com.ms.tax.calculator.domain.entities.*;
 import com.ms.tax.calculator.domain.types.CompanyType;
 import com.ms.tax.calculator.infra.errors.*;
 import com.ms.tax.calculator.infra.proxies.InvoiceProxy;
-import com.ms.tax.calculator.infra.proxies.responses.Invoice;
-import com.ms.tax.calculator.infra.proxies.responses.User;
+import com.ms.tax.calculator.infra.proxies.responses.*;
 import com.ms.tax.calculator.infra.repositories.*;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

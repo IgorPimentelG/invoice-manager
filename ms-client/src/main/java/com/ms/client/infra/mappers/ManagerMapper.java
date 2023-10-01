@@ -2,7 +2,6 @@ package com.ms.client.infra.mappers;
 
 import com.ms.client.domain.entities.Manager;
 import com.ms.client.infra.dtos.CreateManagerDto;
-import com.ms.client.infra.dtos.UpdateManagerDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

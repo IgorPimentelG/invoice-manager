@@ -1,9 +1,6 @@
 package com.ms.tax.calculator.main.config;
 
-import com.ms.tax.calculator.infra.errors.BadRequestException;
-import com.ms.tax.calculator.infra.errors.NoTaxesPayableException;
-import com.ms.tax.calculator.infra.errors.NotFoundException;
-import com.ms.tax.calculator.infra.errors.UnauthorizedException;
+import com.ms.tax.calculator.infra.errors.*;
 import com.ms.tax.calculator.main.properties.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

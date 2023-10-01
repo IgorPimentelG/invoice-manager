@@ -1,4 +1,4 @@
-package com.ms.client.main.configs;
+package com.ms.client.main.config;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

@@ -1,7 +1,6 @@
 package com.ms.email.main.config;
 
-import com.ms.email.infra.errors.NotFoundException;
-import com.ms.email.infra.errors.UnauthorizedException;
+import com.ms.email.infra.errors.*;
 import com.ms.email.main.properties.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

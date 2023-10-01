@@ -1,4 +1,4 @@
-package com.ms.client.main.configs;
+package com.ms.client.main.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfigs {
+public class SecurityConfig {
 
 	@Autowired
 	private SecurityFilterConfig securityFilter;

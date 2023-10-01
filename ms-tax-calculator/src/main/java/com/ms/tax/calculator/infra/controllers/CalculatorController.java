@@ -1,9 +1,7 @@
 package com.ms.tax.calculator.infra.controllers;
 
 import com.ms.tax.calculator.domain.entities.TaxResume;
-import com.ms.tax.calculator.infra.controllers.docs.ApiOperationCalculate;
-import com.ms.tax.calculator.infra.controllers.docs.ApiOperationDownload;
-import com.ms.tax.calculator.infra.controllers.docs.ApiOperationPay;
+import com.ms.tax.calculator.infra.controllers.docs.*;
 import com.ms.tax.calculator.infra.services.CalculatorService;
 import com.ms.tax.calculator.infra.services.PDFService;
 import io.swagger.v3.oas.annotations.tags.Tag;

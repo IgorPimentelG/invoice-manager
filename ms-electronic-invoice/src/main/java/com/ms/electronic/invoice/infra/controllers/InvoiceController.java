@@ -1,12 +1,8 @@
 package com.ms.electronic.invoice.infra.controllers;
 
 import com.ms.electronic.invoice.domain.entities.Invoice;
-import com.ms.electronic.invoice.infra.controllers.docs.ApiOperationCancel;
-import com.ms.electronic.invoice.infra.controllers.docs.ApiOperationFind;
-import com.ms.electronic.invoice.infra.controllers.docs.ApiOperationList;
-import com.ms.electronic.invoice.infra.controllers.docs.ApiOperationRegister;
-import com.ms.electronic.invoice.infra.dtos.CreateInvoiceDto;
-import com.ms.electronic.invoice.infra.dtos.ValidationDto;
+import com.ms.electronic.invoice.infra.controllers.docs.*;
+import com.ms.electronic.invoice.infra.dtos.*;
 import com.ms.electronic.invoice.infra.helpers.FormatCNPJ;
 import com.ms.electronic.invoice.infra.mappers.InvoiceMapper;
 import com.ms.electronic.invoice.infra.services.InvoiceService;
@@ -22,7 +18,6 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 
 @RestController
 @RequestMapping("/api/invoice")

@@ -2,12 +2,9 @@ package com.ms.client.infra.controllers;
 
 import com.ms.client.domain.entities.Company;
 import com.ms.client.infra.controllers.docs.company.*;
-import com.ms.client.infra.dtos.CreateAddressDto;
-import com.ms.client.infra.dtos.CreateCompanyDto;
-import com.ms.client.infra.dtos.UpdateCompanyDto;
+import com.ms.client.infra.dtos.*;
 import com.ms.client.infra.helpers.FormatCNPJ;
-import com.ms.client.infra.mappers.AddressMapper;
-import com.ms.client.infra.mappers.CompanyMapper;
+import com.ms.client.infra.mappers.*;
 import com.ms.client.infra.services.CompanyService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
