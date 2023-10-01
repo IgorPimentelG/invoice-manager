@@ -5,12 +5,13 @@
 	<parent>
 		<groupId>com.invoice.manager</groupId>
 		<artifactId>invoice-manager</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<groupId>com.ms</groupId>
 	<artifactId>ms-email</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>ms-email</name>
 	<description>Microservice for sending email</description>
 

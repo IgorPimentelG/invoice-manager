@@ -95,7 +95,7 @@ services:
 
   service-registry:
     container_name: 007-service-registry
-    image: service-registry:0.0.1-SNAPSHOT
+    image: service-registry:1.0.0
     env_file:
       - /service-registry/.env
     ports:
@@ -105,7 +105,7 @@ services:
 
   service-auth:
     container_name: 008-service-auth
-    image: service-auth:0.0.1-SNAPSHOT
+    image: service-auth:1.0.0
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-client:${DB_MS_CLIENT_PORT}/${DB_MS_CLIENT_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:  http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
@@ -121,7 +121,7 @@ services:
 
   service-gateway:
     container_name: 009-service-gateway
-    image: service-gateway:0.0.1-SNAPSHOT
+    image: service-gateway:1.0.0
     restart: on-failure
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
@@ -139,13 +139,14 @@ services:
       - ms-client
       - ms-email
       - ms-electronic-invoice
+      - db-ms-tax-calculator
       - rabbitmq
     networks:
       - invoice-manager
 
   ms-client:
     container_name: 010-ms-client
-    image: ms-client:0.0.1-SNAPSHOT
+    image: ms-client:1.0.0
     restart: on-failure
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-client:${DB_MS_CLIENT_PORT}/${DB_MS_CLIENT_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
@@ -166,7 +167,7 @@ services:
 
   ms-email:
     container_name: 011-ms-email
-    image: ms-email:0.0.1-SNAPSHOT
+    image: ms-email:1.0.0
     restart: on-failure
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-email:${DB_MS_EMAIL_PORT}/${DB_MS_EMAIL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
@@ -188,7 +189,7 @@ services:
 
   ms-electronic-invoice:
     container_name: 012-ms-electronic-invoice
-    image: ms-electronic-invoice:0.0.1-SNAPSHOT
+    image: ms-electronic-invoice:1.0.0
     restart: on-failure
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-electronic-invoice:${DB_MS_ELECTRONIC_INVOICE_PORT}/${DB_MS_ELECTRONIC_INVOICE_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
@@ -203,6 +204,26 @@ services:
       - service-registry
       - service-auth
       - db-ms-electronic-invoice
+    networks:
+      - invoice-manager
+
+  ms-tax-calculator:
+    container_name: 013-ms-tax-calculator
+    image: ms-tax-calculator:1.0.0
+    restart: on-failure
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-ms-tax-calculator:${DB_MS_TAX_CALCULATOR_PORT}/${DB_MS_TAX_CALCULATOR_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${EUREKA_USERNAME}:${EUREKA_PASSWORD}@service-registry:8081/eureka/
+      SPRING_ZIPKIN_BASEURL: http://zipkin:9411
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+    env_file:
+      - /ms-tax-calculator/.env
+    ports:
+      - '8086:8086'
+    depends_on:
+      - service-registry
+      - service-auth
+      - db-ms-tax-calculator
     networks:
       - invoice-manager
 
