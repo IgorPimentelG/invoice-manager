@@ -1,5 +1,4 @@
 # Invoice Manager ️👨‍💻
-#
 
 <p align="center">
   <img src="./docs/logo.png" alt="logo" width="300" />
