@@ -1,4 +1,13 @@
 # Invoice Manager ️👨‍💻
+#
+
+<p align="center">
+  <img src="./docs/logo.png" alt="logo" width="300" />
+</p>
+
+#
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
 
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
@@ -16,7 +25,7 @@ O intuito deste projeto é aplicar os conhecimentos de arquiteturas de microsser
 - Gerenciamento de empresas
 - Gerenciamento de NF-e
 - Cálculo de impostos
-- Geração de relatórios
+- Geração e download de relatórios
 
 ## Infraestrutura
 
@@ -24,7 +33,15 @@ O intuito deste projeto é aplicar os conhecimentos de arquiteturas de microsser
 recursos essenciais, como descoberta de serviços, balanceamento de carga, gateway e monitoramento, 
 facilitando o desenvolvimento e a implantação de aplicativos distribuídos na nuvem.
 
-![Infraestrutura](./docs/infra.jpg)
+Todo o projeto foi organizado utilizando módulos do Maven, o que permitiu uma estruturação mais modular do código. 
+Isso facilitou a manutenção e a compreensão do fluxo do projeto, além de permitir a reutilização de bibliotecas entre 
+os módulos.
+
+Na imagem abaixo é possível visualizar toda a organização da intraestrutura em containers dockers:
+
+<p align="center">
+  <img src="./docs/infra.jpg" alt="infra" />
+</p>
 
 ### Serviços
 | **Projeto**        | **Descrição**                                                                          |
@@ -49,6 +66,8 @@ simplifica a criação de aplicativos web e microserviços, fornecendo configura
 ferramentas para criar e gerenciar aplicativos distribuídos e sistemas de microsserviços na nuvem.
 - [Spring Security](https://spring.io/projects/spring-security): é um módulo do Spring que fornece autenticação e 
 controle de acesso para aplicativos Java, garantindo a segurança de recursos e endpoints.
+- [Heteoas](https://spring.io/projects/spring-hateoas): Ajuda a criar APIs REST compatíveis com HATEOAS.
+Ele simplifica a criação de links entre recursos em suas respostas.
 - [Maven](https://maven.apache.org/): É uma ferramenta de automação de construção e gerenciamento de dependências 
 usada principalmente em projetos Java. Ele simplifica o processo de compilação, empacotamento e distribuição de aplicativos.
 - [MySQL](https://www.mysql.com/): É um sistema de gerenciamento de banco de dados relacional amplamente usado, 
@@ -61,14 +80,34 @@ aplicativos distribuídos usando o modelo de filas de mensagens.
 de microsserviços, permitindo rastrear o fluxo de solicitações e identificar gargalos de desempenho.
 - [Swagger](https://swagger.io/): Simplifica a documentação e teste de APIs, permitindo aos desenvolvedores descrever,
 visualizar e interagir com serviços da web de forma eficiente.
-
+- [Resilience4j](https://resilience4j.readme.io/docs/getting-started): É uma biblioteca de tolerância a falhas. 
+No projeto foram utilizados o Circuit Breaker que é um padrão de design que permite a falha rápida e evita 
+chamadas a um serviço se ele estiver indisponível ou se houver uma alta taxa de erros. E o Rate Limiter que garante que um
+cliente não exceda um número definido de solicitações por período de tempo.
+- [Thymeleaf](https://www.thymeleaf.org/): É um mecanismo de template para processamento e criação de HTML, XML,
+JavaScript, CSS e texto.
+- [Flying Saucer PDF](https://github.com/flyingsaucerproject/flyingsaucer): Permite converter templates do thymeleaf em
+arquivos PDF.
 
 ## Em breve
 
-|   | Função                |
-|:--|:----------------------|
-| ❌ | Download da NF-e      |
-| ❌ | Geração de relatórios |
+|   | Função                       |
+|:--|:-----------------------------|
+| ❌ | 100% de cobertura dos testes |
+
+## Execução
+
+1. Configure as variáveis de ambiente criando um arquivo com nome .env em cada microserviço. Na raiz de cada diretório, é possível encontrar 
+o arquivo .env.exemple com os valores necessários.
+
+
+
+2. Execute a construção das imagens Docker para os microserviços:
+```bash
+    mvn spring-boot:build-image -DskipTests
+```
+
+3. Aguarde até que todos os contêineres estejam online.
 
 
 ## Feedback
