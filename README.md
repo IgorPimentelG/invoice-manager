@@ -11,7 +11,7 @@
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 
-E uma aplicação de gerenciamento de notas fiscais que automatiza o cálculo de impostos. 
+É uma aplicação de gerenciamento de notas fiscais que automatiza o cálculo de impostos. 
 Ele permite aos usuários inserir informações das notas fiscais e automaticamente calcula os impostos aplicáveis.
 Além disso, oferece recursos de armazenamento seguro das notas fiscais, geração de relatórios e conformidade fiscal, 
 simplificando o processo de contabilidade e facilitando o cumprimento das obrigações tributárias.
